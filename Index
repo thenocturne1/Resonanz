@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESONANZ – Medical Performance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --white: #fff; --black: #000; --grey-light: #f5f5f5; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--white); overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 0; }
+        .serif { font-family: 'Libre Bodoni', Georgia, serif; }
+        .sans { font-family: 'DM Sans', sans-serif; }
+
+        .header { position: fixed; top: 0; left: 0; right: 0; z-index: 10000; padding: 24px 28px; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.97); backdrop-filter: blur(8px); transition: background 0.5s ease; }
+        .header.dark { background: rgba(0,0,0,0.95); }
+        .header.dark .nav-btn { color: #fff; }
+        .nav-items { display: flex; align-items: center; gap: 24px; }
+        .nav-btn { font-size: 9px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; background: none; border: none; padding: 8px 4px; color: #000; transition: opacity 0.3s ease; white-space: nowrap; }
+        @media (min-width: 600px) {
+            .nav-items { gap: 48px; }
+            .nav-btn { letter-spacing: 0.18em; padding: 8px 0; }
+        }
+        .nav-btn:hover { opacity: 0.5; }
+        .nav-btn.active { opacity: 1; }
+        .nav-btn.muted { opacity: 0.4; }
+
+        .main-container { height: 100vh; width: 100%; overflow-y: auto; overflow-x: hidden; background: #fff; }
+
+        .hero { min-height: 320vh; position: relative; display: flex; flex-direction: column; align-items: center; padding: 0 28px; }
+        .hero-sticky { position: sticky; top: 50%; transform: translateY(-50%); width: 100%; max-width: 900px; display: flex; flex-direction: column; align-items: center; }
+        .manifest-title { font-size: clamp(72px, 22vw, 200px); font-weight: 400; line-height: 0.82; letter-spacing: -0.02em; text-align: center; }
+        .manifest-title .italic-m { font-style: italic; }
+        .hero-subtitle { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4; margin-top: 16px; }
+        .intro-container { position: relative; height: 120px; width: 100%; max-width: 500px; margin-top: 24px; }
+        .intro-text { font-size: 14px; line-height: 1.5; text-align: center; position: absolute; top: 0; left: 0; right: 0; opacity: 0; transition: opacity 0.6s ease; }
+        .intro-text.active { opacity: 1; }
+
+        .parallax-img { position: absolute; will-change: transform; }
+        .parallax-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); }
+        .parallax-img-1 { right: 5%; top: 15%; width: clamp(140px, 18vw, 200px); aspect-ratio: 4/5; }
+        .parallax-img-2 { left: 5%; top: 45%; width: clamp(120px, 15vw, 170px); aspect-ratio: 3/4; opacity: 0; transition: opacity 0.8s ease; }
+
+        .manifest-section { min-height: 100vh; padding: 120px 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; }
+        .manifest-text { max-width: 700px; text-align: center; }
+        .manifest-statement { font-size: clamp(24px, 5vw, 42px); font-weight: 400; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 48px; }
+        .manifest-body { font-size: 14px; line-height: 1.8; opacity: 0.75; margin-bottom: 32px; }
+        .manifest-signature { font-size: 12px; font-style: italic; opacity: 0.5; }
+
+        .stats-inline { display: flex; justify-content: center; gap: 80px; padding: 80px 28px; background: var(--grey-light); flex-wrap: wrap; }
+        .stat-inline { text-align: center; }
+        .stat-inline-number { font-size: clamp(48px, 10vw, 80px); font-weight: 400; letter-spacing: -0.03em; line-height: 1; }
+        .stat-inline-text { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.5; margin-top: 12px; max-width: 140px; }
+
+        .statement-zone { height: 150vh; position: relative; background: #fff; }
+        .statement-sticky { position: sticky; top: 30%; height: 40vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 28px; overflow: hidden; }
+        .statement-line { font-size: clamp(48px, 13vw, 120px); font-weight: 400; line-height: 0.95; letter-spacing: -0.03em; opacity: 0; }
+        .statement-line.italic { font-style: italic; }
+
+        .parallax-section { position: relative; min-height: 100vh; overflow: hidden; }
+        .parallax-bg { position: absolute; top: -20%; left: 0; right: 0; height: 140%; z-index: 1; }
+        .parallax-bg img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); }
+        .parallax-content { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 120px 28px; }
+        .parallax-content.right { align-items: flex-end; }
+        .parallax-card { background: rgba(255,255,255,0.95); padding: 48px; max-width: 500px; transition: all 0.3s ease; }
+        .parallax-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .parallax-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4; margin-bottom: 16px; }
+        .parallax-title { font-size: clamp(28px, 5vw, 42px); font-weight: 400; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 20px; }
+        .parallax-text { font-size: 14px; line-height: 1.7; opacity: 0.8; margin-bottom: 16px; }
+        .parallax-item { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.5; margin-bottom: 8px; }
+
+        .columns-section { padding: 120px 28px 80px; background: #fff; }
+        .columns-header { text-align: center; margin-bottom: 80px; }
+        .columns-label { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4; margin-bottom: 16px; }
+        .columns-title { font-size: clamp(44px, 14vw, 140px); font-weight: 400; line-height: 0.92; letter-spacing: -0.025em; text-transform: uppercase; }
+
+        .method-section { padding: 120px 28px; background: #000; color: #fff; }
+        .method-inner { max-width: 1100px; margin: 0 auto; }
+        .method-header { text-align: center; margin-bottom: 100px; }
+        .method-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4; margin-bottom: 16px; }
+        .method-title { font-size: clamp(44px, 12vw, 100px); font-weight: 400; line-height: 0.92; letter-spacing: -0.02em; }
+        .method-title span { font-style: italic; }
+        .method-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-top: 80px; }
+        @media (max-width: 900px) { .method-steps { grid-template-columns: 1fr; } }
+        .method-step { background: rgba(255,255,255,0.03); padding: 40px 28px; }
+        .method-step-number { font-size: 11px; letter-spacing: 0.15em; opacity: 0.3; margin-bottom: 20px; }
+        .method-step-title { font-size: 22px; font-weight: 400; margin-bottom: 16px; }
+        .method-step-text { font-size: 13px; line-height: 1.6; opacity: 0.6; }
+
+        .supplement-section { padding: 120px 28px; background: var(--grey-light); }
+        .supplement-inner { max-width: 1100px; margin: 0 auto; }
+        .supplement-header { margin-bottom: 80px; }
+        .supplement-title { font-size: clamp(36px, 8vw, 64px); font-weight: 400; line-height: 1; margin-bottom: 24px; }
+        .supplement-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; }
+        .supplement-card { background: #fff; padding: 40px 32px; border: 1px solid rgba(0,0,0,0.06); }
+        .supplement-name { font-size: 24px; font-weight: 400; margin-bottom: 8px; }
+        .supplement-latin { font-size: 12px; font-style: italic; opacity: 0.5; margin-bottom: 16px; }
+        .supplement-function { font-size: 13px; line-height: 1.6; opacity: 0.8; }
+
+        .pricing-section { padding: 80px 28px; max-width: 1000px; margin: 0 auto; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+        .price-card { background: rgba(0,0,0,0.03); padding: 32px; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent; }
+        .price-card:hover { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.1); transform: translateY(-4px); }
+        .price-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4; margin-bottom: 12px; }
+        .price-name { font-size: 24px; font-weight: 400; margin-bottom: 8px; }
+        .price-amount { font-size: 42px; font-weight: 400; margin-bottom: 16px; }
+        .price-desc { font-size: 13px; line-height: 1.6; opacity: 0.6; }
+        .price-card-hint { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.4; margin-top: 16px; }
+
+        .cta-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 80px 28px; background: #000; }
+        .cta-title { font-size: clamp(44px, 12vw, 110px); font-weight: 400; line-height: 0.95; text-align: center; margin-bottom: 40px; color: #fff; }
+        .cta-title span { font-style: italic; }
+        .cta-btn { padding: 16px 48px; font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; border: none; cursor: pointer; background: #fff; color: #000; transition: all 0.3s ease; }
+        .cta-btn:hover { opacity: 0.8; }
+
+        .footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .footer a { font-size: 9px; letter-spacing: 0.03em; text-decoration: none; }
+        .footer-links { display: flex; align-items: center; gap: 12px; }
+        .footer-divider { opacity: 0.4; }
+
+        /* OVERLAYS */
+        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 100; display: none; background: #fff; }
+        .overlay.active { display: block; }
+
+        /* ========== LAURA WEISS OVERLAY - NEW CODE ========== */
+        #lauraOverlay { 
+            overflow-y: scroll !important; 
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch;
+        }
+        .laura-scroll-track { 
+            height: 1600vh; 
+            position: relative; 
+            width: 100%; 
+            background: transparent; 
+        }
+
+        .laura-name-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 20; pointer-events: none; text-align: center; width: 100%; transition: opacity 0.5s ease; }
+        .laura-name { font-size: clamp(50px, 15vw, 160px); font-weight: 400; letter-spacing: -0.03em; line-height: 0.85; text-align: center; color: #000; }
+        .laura-letter { transition: font-family 0.5s ease; display: inline-block; }
+        .laura-subtitle { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.4; margin-top: 24px; color: #000; }
+
+        .laura-photo-container { position: fixed; inset: 0; z-index: 10; pointer-events: none; overflow: hidden; }
+        .laura-photo { position: absolute; transition: opacity 1s ease; }
+        .laura-photo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); }
+
+        .laura-growing-words { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 5; pointer-events: none; text-align: center; display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .laura-growing-word { font-weight: 400; letter-spacing: -0.02em; text-transform: uppercase; margin: 5px 0; opacity: 0; color: #000; font-size: 2vw; line-height: 1; display: block; }
+
+        .laura-horizontal { 
+            position: fixed; 
+            inset: 0; 
+            z-index: 30; 
+            display: none; 
+            align-items: center; 
+            overflow: hidden; 
+            background: #0a0a0a; 
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        .laura-horizontal.visible {
+            opacity: 1;
+        }
+        .laura-matrix-text { font-size: clamp(100px, 25vw, 300px); font-weight: 400; letter-spacing: -0.04em; text-transform: uppercase; white-space: nowrap; line-height: 0.8; position: absolute; color: rgba(255,255,255,0.03); pointer-events: none; z-index: 1; transition: opacity 1.2s ease; }
+        .laura-image-track { display: flex; align-items: center; will-change: transform; z-index: 10; position: relative; pointer-events: none; gap: 4vw; padding: 0 10vw; }
+
+        .laura-panel { 
+            flex-shrink: 0; 
+            width: 75vw; 
+            height: 70vh; 
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .laura-panel.wide { width: 85vw; }
+        .laura-panel.narrow { width: 75vw; }
+        
+        .laura-panel-img-box { 
+            width: 100%; 
+            height: 100%; 
+            position: absolute; 
+            inset: 0; 
+        }
+        .laura-panel-img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            filter: grayscale(100%) brightness(0.7);
+            transition: filter 0.5s ease;
+        }
+        
+        /* Gradient overlay for text readability */
+        .laura-panel::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 100%);
+            z-index: 5;
+        }
+        
+        .laura-panel-text { 
+            position: absolute; 
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 48px;
+            z-index: 10; 
+            color: #fff;
+        }
+        .laura-panel-text.center {
+            bottom: 50%;
+            transform: translateY(50%);
+            text-align: center;
+            padding: 48px 64px;
+        }
+        
+        .laura-panel-number {
+            font-size: 11px;
+            letter-spacing: 0.3em;
+            opacity: 0.4;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        .laura-panel-title {
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+        .laura-panel-desc {
+            font-size: 14px;
+            line-height: 1.7;
+            opacity: 0.7;
+            max-width: 400px;
+        }
+        .laura-panel-text.center .laura-panel-desc {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .laura-panel-quote {
+            font-size: clamp(24px, 3.5vw, 36px);
+            line-height: 1.3;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+        .laura-panel-quote em {
+            font-style: italic;
+            opacity: 0.8;
+        }
+        
+        .laura-panel-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .laura-panel-tag {
+            padding: 8px 16px;
+            border: 1px solid rgba(255,255,255,0.25);
+            font-size: 9px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.8);
+            border-radius: 2px;
+        }
+        
+        .laura-panel-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 24px;
+            margin-top: 16px;
+        }
+        .laura-panel-list span {
+            font-size: 13px;
+            opacity: 0.7;
+        }
+
+        .laura-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.5; margin-bottom: 12px; }
+        .laura-title { font-size: 24px; font-weight: 400; margin-bottom: 12px; }
+        .laura-text { font-size: 13px; line-height: 1.6; opacity: 0.7; margin-bottom: 8px; color: #333; }
+        .laura-quote { font-size: clamp(24px, 4vw, 42px); line-height: 1.3; margin-bottom: 32px; }
+        .laura-credential { display: inline-block; padding: 6px 16px; border: 1px solid rgba(0,0,0,0.15); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; margin: 4px; }
+        .laura-credential.dark { border-color: rgba(255,255,255,0.3); color: #fff; }
+
+        .laura-cta { position: fixed; inset: 0; z-index: 70; display: none; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; background: #000; }
+        .laura-cta .cta-btn { pointer-events: auto; }
+
+        @media (max-width: 768px) {
+            .laura-panel-split { grid-template-columns: 1fr; padding: 0 28px; gap: 24px; }
+            .laura-panel-text-box { position: relative; bottom: auto; left: auto; right: auto; max-width: 100%; background: transparent; color: #000; padding: 20px 0; }
+        }
+
+        /* Other overlays */
+        .overlay-content { padding-top: 100px; padding-bottom: 80px; }
+        .overlay-hero { padding: 60px 28px 80px; max-width: 900px; margin: 0 auto; }
+        .overlay-label { font-size: 10px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4; margin-bottom: 16px; }
+        .overlay-title { font-size: clamp(36px, 10vw, 80px); font-weight: 400; line-height: 0.95; letter-spacing: -0.02em; margin-bottom: 32px; }
+
+        .scroll-text-container { overflow: hidden; padding: 40px 0; background: #000; }
+        .scroll-text { display: flex; white-space: nowrap; animation: scrollText 30s linear infinite; }
+        .scroll-text span { font-size: clamp(40px, 8vw, 80px); font-weight: 400; color: rgba(255,255,255,0.1); padding-right: 60px; text-transform: uppercase; }
+        @keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        .modules-section { padding: 80px 28px; background: #f8f8f8; }
+        .modules-inner { max-width: 900px; margin: 0 auto; }
+        .modules-title { font-size: clamp(32px, 8vw, 56px); font-weight: 400; margin-bottom: 60px; }
+        .module { border-left: 2px solid #000; padding-left: 24px; margin-bottom: 48px; }
+        .module-title { font-size: 28px; font-weight: 400; margin-bottom: 12px; }
+        .module-text { font-size: 14px; line-height: 1.7; opacity: 0.6; }
+
+        .overlay-cta { padding: 100px 28px; text-align: center; }
+        .overlay-cta-title { font-size: clamp(44px, 12vw, 110px); font-weight: 400; line-height: 0.95; margin-bottom: 24px; }
+        .overlay-cta-title span { font-style: italic; }
+        .overlay-cta-text { font-size: 14px; opacity: 0.6; margin-bottom: 40px; }
+
+        .comparison-section { padding: 100px 28px; max-width: 1000px; margin: 0 auto; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        @media (max-width: 768px) { .comparison-grid { grid-template-columns: 1fr; } }
+        .comparison-card { padding: 40px; }
+        .comparison-card.old { background: rgba(0,0,0,0.03); }
+        .comparison-card.new { background: #000; color: #fff; }
+        .comparison-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.5; margin-bottom: 20px; }
+        .comparison-title { font-size: 28px; font-weight: 400; margin-bottom: 24px; }
+        .comparison-list { list-style: none; }
+        .comparison-list li { font-size: 14px; line-height: 1.6; margin-bottom: 16px; padding-left: 24px; position: relative; opacity: 0.8; }
+        .comparison-list li::before { content: '—'; position: absolute; left: 0; opacity: 0.4; }
+        .comparison-card.new .comparison-list li::before { content: '✓'; }
+
+        .kontakt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 900px; margin: 0 auto; padding: 60px 28px; }
+        @media (max-width: 768px) { .kontakt-grid { grid-template-columns: 1fr; gap: 40px; } }
+        .kontakt-info h3 { font-size: 14px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 24px; opacity: 0.4; }
+        .kontakt-item { margin-bottom: 32px; }
+        .kontakt-item-label { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.4; margin-bottom: 8px; }
+        .kontakt-item-value { font-size: 18px; }
+        .kontakt-item-value a { color: #000; text-decoration: none; }
+        .kontakt-form label { display: block; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.4; margin-bottom: 8px; }
+        .kontakt-form input, .kontakt-form textarea { width: 100%; padding: 12px 0; font-size: 16px; font-family: 'DM Sans', sans-serif; border: none; border-bottom: 1px solid rgba(0,0,0,0.2); margin-bottom: 32px; background: transparent; outline: none; }
+        .kontakt-form textarea { resize: none; min-height: 120px; }
+
+        #kreativeOverlay { overflow-y: auto; }
+
+        /* PROGRAM DETAIL OVERLAY */
+        .program-overlay { position: fixed; inset: 0; z-index: 9998; background: #fff; display: none; overflow-y: auto; }
+        .program-overlay.active { display: block; }
+        .program-close { 
+            position: fixed; 
+            top: 28px; 
+            left: 28px; 
+            z-index: 10001; 
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 11px; 
+            font-weight: 500; 
+            letter-spacing: 0.1em; 
+            text-transform: uppercase; 
+            cursor: pointer; 
+            background: #fff; 
+            border: 1px solid rgba(0,0,0,0.15); 
+            padding: 14px 24px; 
+            color: #000;
+            border-radius: 100px;
+            transition: all 0.3s ease;
+        }
+        .program-close:hover { 
+            background: #f5f5f5; 
+            padding-left: 20px;
+        }
+        .program-close svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+        }
+        .program-close:hover svg {
+            transform: translateX(-4px);
+        }
+        .program-content { max-width: 800px; margin: 0 auto; padding: 120px 28px 80px; }
+        .program-header { margin-bottom: 60px; }
+        .program-title { font-size: clamp(44px, 10vw, 80px); font-weight: 400; line-height: 0.95; margin-bottom: 16px; }
+        .program-price { font-size: clamp(32px, 6vw, 48px); font-weight: 400; opacity: 0.3; }
+        .program-intro { font-size: 18px; line-height: 1.7; margin-bottom: 60px; max-width: 600px; }
+        .program-section { margin-bottom: 48px; }
+        .program-section-title { font-size: 12px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.4; margin-bottom: 20px; }
+        .program-list { list-style: none; }
+        .program-list li { font-size: 16px; line-height: 1.6; padding: 16px 0; border-bottom: 1px solid rgba(0,0,0,0.08); display: flex; align-items: flex-start; gap: 16px; }
+        .program-list li::before { content: '→'; opacity: 0.3; flex-shrink: 0; }
+        .program-cta { margin-top: 60px; padding-top: 40px; border-top: 1px solid rgba(0,0,0,0.1); }
+
+        /* DETAIL OVERLAYS - Ebenen & Zielgruppen */
+        .detail-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            background: #0a0a0a;
+            display: none;
+            overflow-y: auto;
+            color: #fff;
+        }
+        .detail-overlay.active { display: block; }
+        
+        .detail-close {
+            position: fixed;
+            top: 28px;
+            left: 28px;
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 14px 24px;
+            color: #fff;
+            border-radius: 100px;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+        .detail-close:hover { 
+            background: rgba(255,255,255,0.25); 
+            padding-left: 20px;
+        }
+        .detail-close svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+        }
+        .detail-close:hover svg {
+            transform: translateX(-4px);
+        }
+        
+        .detail-hero {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 80px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .detail-hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+        .detail-hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%) brightness(0.4);
+        }
+        .detail-hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, #0a0a0a 0%, rgba(10,10,10,0.5) 50%, rgba(10,10,10,0.2) 100%);
+        }
+        .detail-hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+        .detail-hero-number {
+            font-size: 12px;
+            letter-spacing: 0.3em;
+            opacity: 0.5;
+            margin-bottom: 20px;
+        }
+        .detail-hero-title {
+            font-size: clamp(48px, 12vw, 120px);
+            font-weight: 400;
+            line-height: 0.9;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+        }
+        .detail-hero-subtitle {
+            font-size: 18px;
+            line-height: 1.6;
+            opacity: 0.7;
+            max-width: 500px;
+        }
+        
+        .detail-content {
+            padding: 80px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .detail-section {
+            margin-bottom: 100px;
+        }
+        .detail-section-label {
+            font-size: 10px;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            opacity: 0.4;
+            margin-bottom: 16px;
+        }
+        .detail-section-title {
+            font-size: clamp(28px, 5vw, 42px);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 32px;
+            letter-spacing: -0.02em;
+        }
+        .detail-section-text {
+            font-size: 16px;
+            line-height: 1.8;
+            opacity: 0.7;
+            max-width: 600px;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+        .detail-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 32px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .detail-card:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.15);
+        }
+        .detail-card-icon {
+            font-size: 24px;
+            margin-bottom: 20px;
+            opacity: 0.6;
+        }
+        .detail-card-title {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 12px;
+        }
+        .detail-card-text {
+            font-size: 14px;
+            line-height: 1.7;
+            opacity: 0.6;
+        }
+        
+        .detail-quote {
+            padding: 60px 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin: 60px 0;
+        }
+        .detail-quote-text {
+            font-size: clamp(24px, 4vw, 36px);
+            line-height: 1.4;
+            font-weight: 400;
+            max-width: 700px;
+        }
+        .detail-quote-text em { font-style: italic; opacity: 0.8; }
+        
+        .detail-list {
+            list-style: none;
+            margin-top: 32px;
+        }
+        .detail-list li {
+            font-size: 16px;
+            line-height: 1.6;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            opacity: 0.8;
+        }
+        .detail-list li::before {
+            content: '→';
+            opacity: 0.4;
+            flex-shrink: 0;
+        }
+        
+        .detail-cta {
+            text-align: center;
+            padding: 80px 40px;
+            background: rgba(255,255,255,0.02);
+            margin-top: 60px;
+        }
+        .detail-cta-title {
+            font-size: clamp(32px, 6vw, 48px);
+            font-weight: 400;
+            margin-bottom: 24px;
+        }
+        .detail-cta .cta-btn {
+            background: #fff;
+            color: #000;
+        }
+        .detail-cta .cta-btn:hover {
+            background: rgba(255,255,255,0.9);
+        }
+        
+        /* Stats in detail overlay */
+        .detail-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            padding: 60px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 60px;
+        }
+        @media (max-width: 768px) {
+            .detail-stats { grid-template-columns: 1fr; gap: 32px; }
+        }
+        .detail-stat-number {
+            font-size: clamp(36px, 8vw, 56px);
+            font-weight: 400;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+        .detail-stat-text {
+            font-size: 13px;
+            opacity: 0.5;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <header class="header" id="header">
+        <nav class="nav-items">
+            <button class="nav-btn sans active" onclick="showMain()">MANIFEST</button>
+            <button class="nav-btn sans muted" onclick="showOverlay('laura')">LAURA WEISS</button>
+            <button class="nav-btn sans muted" onclick="showOverlay('kreative')">KREATIVE</button>
+            <button class="nav-btn sans muted" onclick="showOverlay('kontakt')">KONTAKT</button>
+        </nav>
+    </header>
+
+    <div class="main-container" id="mainContainer">
+        <footer class="footer" id="footer">
+            <a href="/cdn-cgi/l/email-protection#1078757c7c7f506275637f7e717e6a3d607562767f627d717e73753e737f7d" class="sans" style="color: #000;"><span class="__cf_email__" data-cfemail="3f575a5353507f4d5a4c50515e5145124f5a4d59504d525e515c5a115c5052">[email&#160;protected]</span></a>
+            <div class="footer-links">
+                <a href="#" class="sans" style="color: #000;">Instagram</a>
+                <span class="sans footer-divider" style="color: #000;">—</span>
+                <a href="#" class="sans" style="color: #000;">LinkedIn</a>
+            </div>
+        </footer>
+
+        <section class="hero">
+            <div class="hero-sticky" id="heroSticky">
+                <h1 class="manifest-title serif"><span class="italic-m">M</span>anifest</h1>
+                <p class="hero-subtitle sans">Medical Performance</p>
+                <div class="intro-container">
+                    <p class="intro-text serif active" id="intro0">Wir glauben nicht an Grenzen. Wir glauben an Biologie.</p>
+                    <p class="intro-text serif" id="intro1">Der Körper ist kein Hindernis. Er ist das Instrument.</p>
+                    <p class="intro-text serif" id="intro2">Perfektion beginnt auf zellulärer Ebene.</p>
+                </div>
+                <div class="parallax-img parallax-img-1" id="parallaxImg1"><img src="https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=800&q=80" alt=""></div>
+                <div class="parallax-img parallax-img-2" id="parallaxImg2"><img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=800&q=80" alt=""></div>
+            </div>
+        </section>
+
+        <section class="manifest-section">
+            <div class="manifest-text">
+                <p class="manifest-statement serif">Jeder Mensch trägt eine Frequenz in sich. Wenn Körper, Geist und Biochemie in Einklang sind, entsteht Resonanz.</p>
+                <p class="manifest-body sans">Lampenfieber ist kein Charakterfehler. Burnout ist kein Versagen. Es sind Signale eines Systems, das aus der Balance geraten ist.</p>
+                <p class="manifest-signature serif">— RESONANZ, Berlin 2024</p>
+            </div>
+        </section>
+
+        <div class="stats-inline">
+            <div class="stat-inline"><p class="stat-inline-number serif">84%</p><p class="stat-inline-text sans">der Berufsmusiker mit chronischen Beschwerden</p></div>
+            <div class="stat-inline"><p class="stat-inline-number serif">3×</p><p class="stat-inline-text sans">höhere Rate an Angst bei Kreativen</p></div>
+            <div class="stat-inline"><p class="stat-inline-number serif">15%</p><p class="stat-inline-text sans">der Bevölkerung sind hochsensibel</p></div>
+        </div>
+
+        <div class="statement-zone">
+            <div class="statement-sticky">
+                <h2 class="statement-line serif" id="stmt0">Biochemie</h2>
+                <h2 class="statement-line serif italic" id="stmt1">Nervensystem</h2>
+                <h2 class="statement-line serif" id="stmt2">Physische</h2>
+                <h2 class="statement-line serif italic" id="stmt3">Struktur</h2>
+            </div>
+        </div>
+
+        <section class="columns-section">
+            <div class="columns-header">
+                <p class="columns-label sans">Die drei Ebenen</p>
+                <h2 class="columns-title serif">Harmonie</h2>
+            </div>
+        </section>
+
+        <section class="parallax-section" id="parallaxBio">
+            <div class="parallax-bg" id="parallaxBioBg"><img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=1400&q=80" alt=""></div>
+            <div class="parallax-content"><div class="parallax-card" onclick="showDetail('biochemie')" style="cursor: pointer;"><p class="parallax-label sans">Ebene 01</p><h3 class="parallax-title serif">Biochemie</h3><p class="parallax-text sans">Cortisol, Neurotransmitter und Hormone bestimmen, ob Sie performen.</p><p class="parallax-item sans">↳ Stoffwechsel-Analyse</p><p class="parallax-item sans">↳ Cortisol-Tagesprofil</p><p class="parallax-item sans" style="margin-top: 16px; opacity: 0.5;">→ Mehr erfahren</p></div></div>
+        </section>
+        <section class="parallax-section" id="parallaxNerv">
+            <div class="parallax-bg" id="parallaxNervBg"><img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1400&q=80" alt=""></div>
+            <div class="parallax-content right"><div class="parallax-card" onclick="showDetail('nervensystem')" style="cursor: pointer;"><p class="parallax-label sans">Ebene 02</p><h3 class="parallax-title serif">Nervensystem</h3><p class="parallax-text sans">Ihr Vagusnerv entscheidet, ob Sie im Kampf- oder Kreativmodus sind.</p><p class="parallax-item sans">↳ HRV-Analyse</p><p class="parallax-item sans">↳ Vagusnerv-Training</p><p class="parallax-item sans" style="margin-top: 16px; opacity: 0.5;">→ Mehr erfahren</p></div></div>
+        </section>
+        <section class="parallax-section" id="parallaxPhys">
+            <div class="parallax-bg" id="parallaxPhysBg"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1400&q=80" alt=""></div>
+            <div class="parallax-content"><div class="parallax-card" onclick="showDetail('physisch')" style="cursor: pointer;"><p class="parallax-label sans">Ebene 03</p><h3 class="parallax-title serif">Physische Struktur</h3><p class="parallax-text sans">Wir behandeln den Körper, der das Instrument spielt.</p><p class="parallax-item sans">↳ Haltungsanalyse</p><p class="parallax-item sans">↳ Osteopathie</p><p class="parallax-item sans" style="margin-top: 16px; opacity: 0.5;">→ Mehr erfahren</p></div></div>
+        </section>
+
+        <section class="method-section">
+            <div class="method-inner">
+                <div class="method-header"><p class="method-label sans">Die Methode</p><h2 class="method-title serif">Messen.<br><span>Verstehen.</span><br>Optimieren.</h2></div>
+                <div class="method-steps">
+                    <div class="method-step"><p class="method-step-number sans">01</p><h3 class="method-step-title serif">Anamnese</h3><p class="method-step-text sans">90 Minuten.</p></div>
+                    <div class="method-step"><p class="method-step-number sans">02</p><h3 class="method-step-title serif">Diagnostik</h3><p class="method-step-text sans">Blut, Speichel, HRV.</p></div>
+                    <div class="method-step"><p class="method-step-number sans">03</p><h3 class="method-step-title serif">Analyse</h3><p class="method-step-text sans">Muster erkennen.</p></div>
+                    <div class="method-step"><p class="method-step-number sans">04</p><h3 class="method-step-title serif">Protokoll</h3><p class="method-step-text sans">Individueller Plan.</p></div>
+                    <div class="method-step"><p class="method-step-number sans">05</p><h3 class="method-step-title serif">Begleitung</h3><p class="method-step-text sans">Check-ins.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="supplement-section">
+            <div class="supplement-inner">
+                <div class="supplement-header"><p class="overlay-label sans">Biochemische Werkzeuge</p><h2 class="supplement-title serif">Supplemente</h2></div>
+                <div class="supplement-grid">
+                    <div class="supplement-card"><h3 class="supplement-name serif">Ashwagandha</h3><p class="supplement-latin sans">Withania somnifera</p><p class="supplement-function sans">Adaptogen. Reguliert Cortisol.</p></div>
+                    <div class="supplement-card"><h3 class="supplement-name serif">Magnesium</h3><p class="supplement-latin sans">Mg-Glycinat</p><p class="supplement-function sans">Das Entspannungsmineral.</p></div>
+                    <div class="supplement-card"><h3 class="supplement-name serif">L-Theanin</h3><p class="supplement-latin sans">Aminosäure</p><p class="supplement-function sans">Ruhige Wachheit.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="pricing-section">
+            <p class="overlay-label sans" style="text-align: center">Investition</p>
+            <h2 class="modules-title serif" style="text-align: center">Programme</h2>
+            <div class="pricing-grid">
+                <div class="price-card" onclick="showProgram('audit')">
+                    <p class="price-label sans">Einstieg</p>
+                    <h3 class="price-name serif">Performance Audit</h3>
+                    <p class="price-amount serif">450 €</p>
+                    <p class="price-desc sans">90min Anamnese + Diagnostik-Screening</p>
+                    <p class="price-card-hint sans">→ Details ansehen</p>
+                </div>
+                <div class="price-card" onclick="showProgram('intensiv')">
+                    <p class="price-label sans">Intensiv</p>
+                    <h3 class="price-name serif">3-Monats-Programm</h3>
+                    <p class="price-amount serif">1.950 €</p>
+                    <p class="price-desc sans">6 Sessions + individueller Plan</p>
+                    <p class="price-card-hint sans">→ Details ansehen</p>
+                </div>
+                <div class="price-card" onclick="showProgram('maintenance')">
+                    <p class="price-label sans">Maintenance</p>
+                    <h3 class="price-name serif">Betreuung</h3>
+                    <p class="price-amount serif">190 €/Monat</p>
+                    <p class="price-desc sans">Quartals-Checks + Support</p>
+                    <p class="price-card-hint sans">→ Details ansehen</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section" id="ctaSection">
+            <h2 class="cta-title serif">Lets<br><span>perform</span></h2>
+            <button class="cta-btn sans" onclick="showOverlay('kontakt')">Das Audit vereinbaren</button>
+        </section>
+        <div style="height: 20vh; background: #000;"></div>
+    </div>
+
+    <!-- ========== LAURA WEISS OVERLAY - NEW STRUCTURE ========== -->
+    <div class="overlay" id="lauraOverlay">
+        <div class="laura-scroll-track" id="lauraScrollTrack">
+            <div style="height: 1px;"></div>
+        </div>
+
+        <!-- Phase 1: Name -->
+        <div class="laura-name-container" id="lauraNameContainer">
+            <h1 class="laura-name serif">
+                <span class="laura-letter">L</span><span class="laura-letter">A</span><span class="laura-letter">U</span><span class="laura-letter">R</span><span class="laura-letter">A</span><br>
+                <span class="laura-letter">W</span><span class="laura-letter">E</span><span class="laura-letter">I</span><span class="laura-letter">S</span><span class="laura-letter">S</span>
+            </h1>
+            <p class="laura-subtitle sans">Medical Performance Specialist</p>
+        </div>
+        <div class="laura-photo-container" id="lauraPhotoContainer"></div>
+
+        <!-- Phase 2: Growing Words -->
+        <div class="laura-growing-words" id="lauraGrowingWords">
+            <span class="laura-growing-word serif" id="lauraWord1">ZUHÖREN</span>
+            <span class="laura-growing-word serif" id="lauraWord2">MESSEN</span>
+            <span class="laura-growing-word serif" id="lauraWord3">VERSTEHEN</span>
+        </div>
+
+        <!-- Phase 3: Horizontal Scroll -->
+        <div class="laura-horizontal" id="lauraHorizontal">
+            <div class="laura-image-track" id="lauraImageTrack">
+                <!-- Panel 1: Intro -->
+                <div class="laura-panel">
+                    <div class="laura-panel-img-box"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1400&q=80" class="laura-panel-img"></div>
+                    <div class="laura-panel-text">
+                        <p class="laura-panel-number sans">01</p>
+                        <h3 class="laura-panel-title serif">Die Übersetzerin</h3>
+                        <p class="laura-panel-desc sans">Laura Weiss verbindet Schulmedizin mit funktioneller Diagnostik. Ihr Fokus: Das autonome Nervensystem als Schlüssel zu nachhaltiger Leistungsfähigkeit.</p>
+                    </div>
+                </div>
+                
+                <!-- Panel 2: Quote - Wide -->
+                <div class="laura-panel wide">
+                    <div class="laura-panel-img-box"><img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1400&q=80" class="laura-panel-img"></div>
+                    <div class="laura-panel-text center">
+                        <p class="laura-panel-quote serif">„Ich glaube nicht an schnelle Lösungen.<br>Ich glaube an <em>tiefes Verstehen</em>."</p>
+                    </div>
+                </div>
+                
+                <!-- Panel 3: Qualifikationen -->
+                <div class="laura-panel narrow">
+                    <div class="laura-panel-img-box"><img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=1400&q=80" class="laura-panel-img"></div>
+                    <div class="laura-panel-text">
+                        <p class="laura-panel-number sans">02</p>
+                        <h3 class="laura-panel-title serif">Qualifikationen</h3>
+                        <div class="laura-panel-tags">
+                            <span class="laura-panel-tag sans">Klinghardt-Institut</span>
+                            <span class="laura-panel-tag sans">ART</span>
+                            <span class="laura-panel-tag sans">Funktionelle Medizin</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Panel 4: Vorgehen -->
+                <div class="laura-panel">
+                    <div class="laura-panel-img-box"><img src="https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=1400&q=80" class="laura-panel-img"></div>
+                    <div class="laura-panel-text">
+                        <p class="laura-panel-number sans">03</p>
+                        <h3 class="laura-panel-title serif">90 Minuten</h3>
+                        <p class="laura-panel-desc sans">Das erste Gespräch. Keine Unterbrechungen. Ich höre Ihre gesamte Geschichte – von der Kindheit bis heute.</p>
+                    </div>
+                </div>
+                
+                <!-- Panel 5: Methode -->
+                <div class="laura-panel wide">
+                    <div class="laura-panel-img-box"><img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1400&q=80" class="laura-panel-img"></div>
+                    <div class="laura-panel-text">
+                        <p class="laura-panel-number sans">04</p>
+                        <h3 class="laura-panel-title serif">Klinghardt & ART</h3>
+                        <p class="laura-panel-desc sans">Autonomic Response Testing nutzt das autonome Nervensystem als diagnostisches Werkzeug – um verborgene Stressoren zu identifizieren, die andere Methoden übersehen.</p>
+                    </div>
+                </div>
+                
+                <!-- Panel 6: Musiker -->
+                <div class="laura-panel">
+                    <div class="laura-panel-img-box"><img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1400&q=80" class="laura-panel-img"></div>
+                    <div class="laura-panel-text">
+                        <p class="laura-panel-number sans">05</p>
+                        <h3 class="laura-panel-title serif">Musiker & Performer</h3>
+                        <p class="laura-panel-desc sans">Lampenfieber, Fokale Dystonie, Überbelastungssyndrome. 84% der Berufsmusiker leiden an chronischen Beschwerden.</p>
+                    </div>
+                </div>
+                
+                <!-- Panel 7: HSP -->
+                <div class="laura-panel narrow">
+                    <div class="laura-panel-img-box"><img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=1400&q=80" class="laura-panel-img"></div>
+                    <div class="laura-panel-text">
+                        <p class="laura-panel-number sans">06</p>
+                        <h3 class="laura-panel-title serif">Hochsensible</h3>
+                        <p class="laura-panel-desc sans">15-20% der Bevölkerung haben ein fein kalibriertes Nervensystem. Das ist keine Schwäche.</p>
+                    </div>
+                </div>
+                
+                <!-- Panel 8: 7 Blocker -->
+                <div class="laura-panel">
+                    <div class="laura-panel-img-box"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1400&q=80" class="laura-panel-img"></div>
+                    <div class="laura-panel-text">
+                        <p class="laura-panel-number sans">07</p>
+                        <h3 class="laura-panel-title serif">Die 7 Blocker</h3>
+                        <div class="laura-panel-list">
+                            <span class="sans">→ Schwermetalle</span>
+                            <span class="sans">→ Infektionen</span>
+                            <span class="sans">→ EMF</span>
+                            <span class="sans">→ Traumata</span>
+                            <span class="sans">→ Unverträglichkeiten</span>
+                            <span class="sans">→ Störfelder</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="laura-matrix-text serif" style="top: 5%; left: 5%;">MEDICAL</div>
+            <div class="laura-matrix-text serif" style="bottom: 5%; right: 5%;">PERFORMANCE</div>
+        </div>
+
+        <!-- Phase 4: CTA -->
+        <div class="laura-cta" id="lauraCta">
+            <h2 class="cta-title serif">Lernen wir<br><span>uns kennen</span></h2>
+            <p class="sans" style="color: rgba(255,255,255,0.6); margin-bottom: 32px;">Erstgespräch: 30 Minuten, kostenfrei</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 32px;">
+                <span class="laura-credential dark sans">Musiker</span>
+                <span class="laura-credential dark sans">Kreative</span>
+                <span class="laura-credential dark sans">HSP</span>
+                <span class="laura-credential dark sans">Führungskräfte</span>
+            </div>
+            <button class="cta-btn sans" onclick="showOverlay('kontakt')">Termin vereinbaren</button>
+        </div>
+    </div>
+
+    <!-- KREATIVE OVERLAY -->
+    <div class="overlay" id="kreativeOverlay">
+        <div class="overlay-content">
+            <section class="overlay-hero"><p class="overlay-label sans">Für Menschen, die unter Druck performen</p><h1 class="overlay-title serif">Wer ist<br><span style="font-style: italic;">RESONANZ</span></h1></section>
+            <div class="scroll-text-container"><div class="scroll-text"><span class="serif">Musiker</span><span class="serif">Kreative</span><span class="serif">Führungskräfte</span><span class="serif">Hochsensible</span><span class="serif">Performer</span><span class="serif">Musiker</span><span class="serif">Kreative</span><span class="serif">Führungskräfte</span><span class="serif">Hochsensible</span><span class="serif">Performer</span></div></div>
+            <section class="parallax-section kreative-parallax"><div class="parallax-bg kreative-bg"><img src="https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=1400&q=80" alt=""></div><div class="parallax-content"><div class="parallax-card" onclick="showDetail('musiker')" style="cursor: pointer;"><p class="parallax-label sans">Zielgruppe 01</p><h3 class="parallax-title serif">Musiker & Performer</h3><p class="parallax-text sans">84% der Berufsmusiker leiden an chronischen Beschwerden.</p><p class="parallax-item sans">→ Lampenfieber</p><p class="parallax-item sans">→ Fokale Dystonie</p><p class="parallax-item sans" style="margin-top: 16px; opacity: 0.5;">→ Mehr erfahren</p></div></div></section>
+            <section class="parallax-section kreative-parallax"><div class="parallax-bg kreative-bg"><img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1400&q=80" alt=""></div><div class="parallax-content right"><div class="parallax-card" onclick="showDetail('hsp')" style="cursor: pointer;"><p class="parallax-label sans">Zielgruppe 02</p><h3 class="parallax-title serif">Hochsensible (HSP)</h3><p class="parallax-text sans">15-20% haben ein fein kalibriertes Nervensystem.</p><p class="parallax-item sans">→ Überstimulation</p><p class="parallax-item sans">→ Tiefe Verarbeitung</p><p class="parallax-item sans" style="margin-top: 16px; opacity: 0.5;">→ Mehr erfahren</p></div></div></section>
+            <section class="parallax-section kreative-parallax"><div class="parallax-bg kreative-bg"><img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1400&q=80" alt=""></div><div class="parallax-content"><div class="parallax-card" onclick="showDetail('fuehrungskraefte')" style="cursor: pointer;"><p class="parallax-label sans">Zielgruppe 03</p><h3 class="parallax-title serif">Führungskräfte</h3><p class="parallax-text sans">Chronischer Entscheidungsstress.</p><p class="parallax-item sans">→ Entscheidungsmüdigkeit</p><p class="parallax-item sans">→ Brain Fog</p><p class="parallax-item sans" style="margin-top: 16px; opacity: 0.5;">→ Mehr erfahren</p></div></div></section>
+            <section class="parallax-section kreative-parallax"><div class="parallax-bg kreative-bg"><img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400&q=80" alt=""></div><div class="parallax-content right"><div class="parallax-card" onclick="showDetail('kreative')" style="cursor: pointer;"><p class="parallax-label sans">Zielgruppe 04</p><h3 class="parallax-title serif">Kreative</h3><p class="parallax-text sans">3x höhere Rate an Angst und Depression.</p><p class="parallax-item sans">→ Deadline-Stress</p><p class="parallax-item sans">→ Kreative Blockaden</p><p class="parallax-item sans" style="margin-top: 16px; opacity: 0.5;">→ Mehr erfahren</p></div></div></section>
+            <section class="comparison-section"><div class="comparison-grid"><div class="comparison-card old"><p class="comparison-label sans">Konventionell</p><h3 class="comparison-title serif">Betablocker</h3><ul class="comparison-list sans"><li>Blockiert nur Symptome</li><li>Ursache bleibt</li></ul></div><div class="comparison-card new"><p class="comparison-label sans">RESONANZ</p><h3 class="comparison-title serif">Ursachen-Arbeit</h3><ul class="comparison-list sans"><li>Biochemische Analyse</li><li>Langfristige Autonomie</li></ul></div></div></section>
+            <section class="modules-section"><div class="modules-inner"><p class="overlay-label sans">Medical Performance</p><h2 class="modules-title serif">Die Module</h2><div class="module" onclick="showDetail('biochemie')" style="cursor: pointer;"><h3 class="module-title serif">Modul 1: Biochemie</h3><p class="module-text sans">Stoffwechsel. Cortisol. Neurotransmitter.</p><p class="module-text sans" style="opacity: 0.4; margin-top: 8px;">→ Mehr erfahren</p></div><div class="module" onclick="showDetail('nervensystem')" style="cursor: pointer;"><h3 class="module-title serif">Modul 2: Nervensystem</h3><p class="module-text sans">HRV. Vagusnerv. Atemtechniken.</p><p class="module-text sans" style="opacity: 0.4; margin-top: 8px;">→ Mehr erfahren</p></div><div class="module" onclick="showDetail('physisch')" style="cursor: pointer;"><h3 class="module-title serif">Modul 3: Struktur</h3><p class="module-text sans">Haltung. Bewegung. Osteopathie.</p><p class="module-text sans" style="opacity: 0.4; margin-top: 8px;">→ Mehr erfahren</p></div></div></section>
+            <section class="overlay-cta" style="background: #000;"><h2 class="overlay-cta-title serif" style="color: #fff;">Bereit zu<br><span>performen?</span></h2><button class="cta-btn sans" onclick="showOverlay('kontakt')">Termin vereinbaren</button></section>
+        </div>
+    </div>
+
+    <!-- KONTAKT OVERLAY -->
+    <div class="overlay" id="kontaktOverlay" style="overflow-y: auto;">
+        <div class="overlay-content">
+            <section class="overlay-hero" style="text-align: center;"><p class="overlay-label sans">Kontakt</p><h1 class="overlay-title serif">Lets<br><span style="font-style: italic;">connect</span></h1></section>
+            <div class="kontakt-grid">
+                <div class="kontakt-info"><h3 class="sans">Direkt erreichen</h3><div class="kontakt-item"><p class="kontakt-item-label sans">Email</p><p class="kontakt-item-value serif"><a href="/cdn-cgi/l/email-protection#cfa7aaa3a3a08fbdaabca0a1aea1b5e2bfaabda9a0bda2aea1acaae1aca0a2"><span class="__cf_email__" data-cfemail="5b333e3737341b293e2834353a3521762b3e293d3429363a35383e75383436">[email&#160;protected]</span></a></p></div><div class="kontakt-item"><p class="kontakt-item-label sans">Telefon</p><p class="kontakt-item-value serif"><a href="tel:+4930123456789">+49 30 123 456 789</a></p></div><div class="kontakt-item"><p class="kontakt-item-label sans">Adresse</p><p class="kontakt-item-value serif">Praxis RESONANZ<br>Kastanienallee 77<br>10435 Berlin</p></div></div>
+                <div class="kontakt-form"><h3 class="sans" style="font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 24px; opacity: 0.4;">Nachricht senden</h3><form><label class="sans">Name</label><input type="text" placeholder="Ihr Name"><label class="sans">Email</label><input type="email" placeholder="ihre@email.com"><label class="sans">Nachricht</label><textarea placeholder="Wie können wir Ihnen helfen?"></textarea><button type="submit" class="cta-btn sans" style="background: #000; color: #fff; width: 100%;">Absenden</button></form></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROGRAM DETAIL OVERLAYS -->
+    <div class="program-overlay" id="programAudit">
+        <button class="program-close sans" onclick="closeProgram()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Zurück</button>
+        <div class="program-content">
+            <div class="program-header">
+                <p class="overlay-label sans">Einstieg</p>
+                <h1 class="program-title serif">Performance Audit</h1>
+                <p class="program-price serif">450 €</p>
+            </div>
+            <p class="program-intro sans">Das Fundament für Ihre Optimierung. In 90 Minuten erfassen wir Ihre komplette Geschichte und identifizieren die Hebel für nachhaltige Veränderung.</p>
+            <div class="program-section">
+                <h3 class="program-section-title sans">Was ist enthalten</h3>
+                <ul class="program-list sans">
+                    <li>90-minütige Tiefenanalyse Ihrer Krankengeschichte</li>
+                    <li>Analyse Ihres aktuellen Lebensstils und Stressoren</li>
+                    <li>Initiales Diagnostik-Screening (Blut, Speichel)</li>
+                    <li>Auswertungsgespräch mit konkreten Empfehlungen</li>
+                    <li>Schriftlicher Bericht mit priorisierten Maßnahmen</li>
+                </ul>
+            </div>
+            <div class="program-section">
+                <h3 class="program-section-title sans">Für wen geeignet</h3>
+                <ul class="program-list sans">
+                    <li>Sie möchten verstehen, was Ihre Performance limitiert</li>
+                    <li>Sie suchen einen evidenzbasierten Einstieg</li>
+                    <li>Sie brauchen Klarheit vor einer Investition in längere Programme</li>
+                </ul>
+            </div>
+            <div class="program-cta">
+                <button class="cta-btn sans" onclick="showOverlay('kontakt'); closeProgram();">Audit vereinbaren</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="program-overlay" id="programIntensiv">
+        <button class="program-close sans" onclick="closeProgram()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Zurück</button>
+        <div class="program-content">
+            <div class="program-header">
+                <p class="overlay-label sans">Intensiv</p>
+                <h1 class="program-title serif">3-Monats-Programm</h1>
+                <p class="program-price serif">1.950 €</p>
+            </div>
+            <p class="program-intro sans">Die vollständige Transformation. Drei Monate intensive Begleitung, um Ihre Biochemie, Ihr Nervensystem und Ihre physische Struktur nachhaltig zu optimieren.</p>
+            <div class="program-section">
+                <h3 class="program-section-title sans">Was ist enthalten</h3>
+                <ul class="program-list sans">
+                    <li>Initiales Performance Audit (90 Minuten)</li>
+                    <li>Umfassende Labordiagnostik (Blut, Speichel, HRV)</li>
+                    <li>6 Follow-up Sessions à 60 Minuten</li>
+                    <li>Individueller Supplementierungs-Plan</li>
+                    <li>Nervensystem-Training (Atemtechniken, Vagusnerv)</li>
+                    <li>Email-Support zwischen den Sessions</li>
+                    <li>Zugang zu exklusiven Ressourcen und Protokollen</li>
+                </ul>
+            </div>
+            <div class="program-section">
+                <h3 class="program-section-title sans">Für wen geeignet</h3>
+                <ul class="program-list sans">
+                    <li>Musiker mit Lampenfieber oder chronischer Erschöpfung</li>
+                    <li>Führungskräfte mit Executive Burnout</li>
+                    <li>Hochsensible, die ihre Energie managen wollen</li>
+                    <li>Kreative, die konstant unter Deadline-Druck stehen</li>
+                </ul>
+            </div>
+            <div class="program-cta">
+                <button class="cta-btn sans" onclick="showOverlay('kontakt'); closeProgram();">Erstgespräch vereinbaren</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="program-overlay" id="programMaintenance">
+        <button class="program-close sans" onclick="closeProgram()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Zurück</button>
+        <div class="program-content">
+            <div class="program-header">
+                <p class="overlay-label sans">Maintenance</p>
+                <h1 class="program-title serif">Betreuung</h1>
+                <p class="program-price serif">190 €/Monat</p>
+            </div>
+            <p class="program-intro sans">Für nachhaltige Ergebnisse. Nach dem Intensiv-Programm begleiten wir Sie weiter, um Ihre Fortschritte zu sichern und bei neuen Herausforderungen zu unterstützen.</p>
+            <div class="program-section">
+                <h3 class="program-section-title sans">Was ist enthalten</h3>
+                <ul class="program-list sans">
+                    <li>Quartalsweise Laborkontrollen</li>
+                    <li>Monatliche 30-Minuten Check-in Sessions</li>
+                    <li>Anpassung der Protokolle bei Bedarf</li>
+                    <li>Prioritäts-Email-Support</li>
+                    <li>Zugang zu neuen Ressourcen und Updates</li>
+                </ul>
+            </div>
+            <div class="program-section">
+                <h3 class="program-section-title sans">Voraussetzung</h3>
+                <ul class="program-list sans">
+                    <li>Abschluss des 3-Monats-Intensiv-Programms</li>
+                    <li>Oder: Performance Audit + Eignungsgespräch</li>
+                </ul>
+            </div>
+            <div class="program-cta">
+                <button class="cta-btn sans" onclick="showOverlay('kontakt'); closeProgram();">Betreuung anfragen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAIL OVERLAYS - Ebenen -->
+    <div class="detail-overlay" id="detailBiochemie">
+        <button class="detail-close sans" onclick="closeDetail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Zurück</button>
+        <div class="detail-hero">
+            <div class="detail-hero-bg"><img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=1600&q=80" alt=""></div>
+            <div class="detail-hero-content">
+                <p class="detail-hero-number sans">EBENE 01</p>
+                <h1 class="detail-hero-title serif">Biochemie</h1>
+                <p class="detail-hero-subtitle sans">Cortisol, Neurotransmitter und Hormone – die unsichtbaren Dirigenten Ihrer Performance.</p>
+            </div>
+        </div>
+        <div class="detail-content">
+            <div class="detail-stats">
+                <div><p class="detail-stat-number serif">73%</p><p class="detail-stat-text sans">aller Performer haben suboptimale Cortisol-Kurven</p></div>
+                <div><p class="detail-stat-number serif">4x</p><p class="detail-stat-text sans">höheres Burnout-Risiko bei Neurotransmitter-Dysbalance</p></div>
+                <div><p class="detail-stat-number serif">90%</p><p class="detail-stat-text sans">Verbesserung möglich durch gezielte Intervention</p></div>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Das Problem</p>
+                <h2 class="detail-section-title serif">Warum Biochemie entscheidet</h2>
+                <p class="detail-section-text sans">Ihr Körper ist ein biochemisches Orchester. Wenn Cortisol, Dopamin, Serotonin und GABA nicht harmonieren, spielt es keine Rolle, wie talentiert Sie sind – Sie werden nicht performen können. Chronischer Stress, falsche Ernährung und Schlafmangel bringen dieses Orchester aus dem Takt.</p>
+            </div>
+            
+            <div class="detail-quote">
+                <p class="detail-quote-text serif">„Sie können nicht gegen Ihre Biochemie ankämpfen. Aber Sie können <em>mit ihr arbeiten</em>."</p>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Unsere Diagnostik</p>
+                <h2 class="detail-section-title serif">Was wir messen</h2>
+                <div class="detail-grid">
+                    <div class="detail-card">
+                        <p class="detail-card-icon">◎</p>
+                        <h3 class="detail-card-title serif">Cortisol-Tagesprofil</h3>
+                        <p class="detail-card-text sans">Vier Speichelproben über den Tag verteilt zeigen, ob Ihr Stresshormon-Rhythmus gesund ist oder ob chronischer Stress Ihre Nebennieren erschöpft hat.</p>
+                    </div>
+                    <div class="detail-card">
+                        <p class="detail-card-icon">◎</p>
+                        <h3 class="detail-card-title serif">Neurotransmitter-Panel</h3>
+                        <p class="detail-card-text sans">Dopamin für Motivation, Serotonin für Gelassenheit, GABA für Entspannung. Wir messen die Botenstoffe, die Ihre mentale Performance bestimmen.</p>
+                    </div>
+                    <div class="detail-card">
+                        <p class="detail-card-icon">◎</p>
+                        <h3 class="detail-card-title serif">Stoffwechsel-Analyse</h3>
+                        <p class="detail-card-text sans">Blutzucker-Regulation, Schilddrüsenfunktion, Entzündungsmarker – die Grundlagen, ohne die keine Optimierung möglich ist.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Die Lösung</p>
+                <h2 class="detail-section-title serif">Wie wir optimieren</h2>
+                <ul class="detail-list">
+                    <li>Individuelle Supplementierung basierend auf Ihren Laborwerten</li>
+                    <li>Ernährungsanpassungen für stabile Energie und klaren Fokus</li>
+                    <li>Timing-Protokolle: Wann Sie essen, schlafen und performen</li>
+                    <li>Adaptogene wie Ashwagandha zur Cortisol-Regulation</li>
+                    <li>Gezielte Aminosäuren für Neurotransmitter-Balance</li>
+                </ul>
+            </div>
+            
+            <div class="detail-cta">
+                <h2 class="detail-cta-title serif">Biochemie verstehen</h2>
+                <p class="sans" style="opacity: 0.6; margin-bottom: 32px;">Lassen Sie uns Ihre biochemischen Muster analysieren.</p>
+                <button class="cta-btn sans" onclick="showOverlay('kontakt'); closeDetail();">Erstgespräch vereinbaren</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-overlay" id="detailNervensystem">
+        <button class="detail-close sans" onclick="closeDetail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Zurück</button>
+        <div class="detail-hero">
+            <div class="detail-hero-bg"><img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1600&q=80" alt=""></div>
+            <div class="detail-hero-content">
+                <p class="detail-hero-number sans">EBENE 02</p>
+                <h1 class="detail-hero-title serif">Nervensystem</h1>
+                <p class="detail-hero-subtitle sans">Ihr Vagusnerv entscheidet, ob Sie im Kampfmodus oder im Flow-Zustand sind.</p>
+            </div>
+        </div>
+        <div class="detail-content">
+            <div class="detail-stats">
+                <div><p class="detail-stat-number serif">80%</p><p class="detail-stat-text sans">der Kommunikation läuft vom Körper zum Gehirn</p></div>
+                <div><p class="detail-stat-number serif">3 sec</p><p class="detail-stat-text sans">bis Ihr Nervensystem auf Gefahr umschaltet</p></div>
+                <div><p class="detail-stat-number serif">∞</p><p class="detail-stat-text sans">trainierbar – Ihr Nervensystem kann lernen</p></div>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Das Problem</p>
+                <h2 class="detail-section-title serif">Gefangen im Überlebensmodus</h2>
+                <p class="detail-section-text sans">Ihr autonomes Nervensystem kennt drei Zustände: Sicherheit (ventral vagal), Kampf/Flucht (sympathisch) und Erstarrung (dorsal vagal). Die meisten Performer sind chronisch im Sympathikus gefangen – ständig alarmiert, nie wirklich entspannt. Das kostet Energie, blockiert Kreativität und führt zu Lampenfieber.</p>
+            </div>
+            
+            <div class="detail-quote">
+                <p class="detail-quote-text serif">„Lampenfieber ist kein Charakterfehler. Es ist ein Nervensystem, das <em>Schutz</em> sucht."</p>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Unsere Diagnostik</p>
+                <h2 class="detail-section-title serif">Was wir messen</h2>
+                <div class="detail-grid">
+                    <div class="detail-card">
+                        <p class="detail-card-icon">◎</p>
+                        <h3 class="detail-card-title serif">HRV-Analyse</h3>
+                        <p class="detail-card-text sans">Die Herzratenvariabilität zeigt, wie flexibel Ihr Nervensystem zwischen Anspannung und Entspannung wechseln kann. Niedrige HRV = wenig Resilienz.</p>
+                    </div>
+                    <div class="detail-card">
+                        <p class="detail-card-icon">◎</p>
+                        <h3 class="detail-card-title serif">Vagustonus-Test</h3>
+                        <p class="detail-card-text sans">Wir testen die Funktion Ihres Vagusnervs – des längsten Nervs, der Gehirn und Körper verbindet und für Regeneration zuständig ist.</p>
+                    </div>
+                    <div class="detail-card">
+                        <p class="detail-card-icon">◎</p>
+                        <h3 class="detail-card-title serif">Stress-Response-Mapping</h3>
+                        <p class="detail-card-text sans">Wir identifizieren Ihre persönlichen Trigger und verstehen, wie Ihr Nervensystem auf spezifische Situationen reagiert.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Die Lösung</p>
+                <h2 class="detail-section-title serif">Nervensystem trainieren</h2>
+                <ul class="detail-list">
+                    <li>Vagusnerv-Stimulation durch gezielte Atemtechniken</li>
+                    <li>Kältetherapie zur Erhöhung der Stresstoleranz</li>
+                    <li>Somatische Übungen zur Regulation des autonomen Nervensystems</li>
+                    <li>Biofeedback-Training mit Echtzeit-HRV-Monitoring</li>
+                    <li>Safe-Sound-Protocol bei Geräuschempfindlichkeit</li>
+                </ul>
+            </div>
+            
+            <div class="detail-cta">
+                <h2 class="detail-cta-title serif">Nervensystem regulieren</h2>
+                <p class="sans" style="opacity: 0.6; margin-bottom: 32px;">Lernen Sie, Ihr autonomes Nervensystem zu verstehen.</p>
+                <button class="cta-btn sans" onclick="showOverlay('kontakt'); closeDetail();">Erstgespräch vereinbaren</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-overlay" id="detailPhysisch">
+        <button class="detail-close sans" onclick="closeDetail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Zurück</button>
+        <div class="detail-hero">
+            <div class="detail-hero-bg"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1600&q=80" alt=""></div>
+            <div class="detail-hero-content">
+                <p class="detail-hero-number sans">EBENE 03</p>
+                <h1 class="detail-hero-title serif">Physische Struktur</h1>
+                <p class="detail-hero-subtitle sans">Wir behandeln den Körper, der das Instrument spielt.</p>
+            </div>
+        </div>
+        <div class="detail-content">
+            <div class="detail-stats">
+                <div><p class="detail-stat-number serif">76%</p><p class="detail-stat-text sans">der Musiker mit Haltungsproblemen</p></div>
+                <div><p class="detail-stat-number serif">8h+</p><p class="detail-stat-text sans">tägliches Üben formt den Körper</p></div>
+                <div><p class="detail-stat-number serif">100%</p><p class="detail-stat-text sans">individuell – kein Körper ist gleich</p></div>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Das Problem</p>
+                <h2 class="detail-section-title serif">Der vergessene Körper</h2>
+                <p class="detail-section-text sans">Ein Geiger verbringt Jahrzehnte in asymmetrischer Haltung. Ein Pianist sitzt stundenlang gebeugt. Ein Sänger spannt unbewusst den Kiefer an. Diese Muster manifestieren sich als Schmerzen, Verspannungen und letztlich als fokale Dystonie – dem Ende vieler Karrieren.</p>
+            </div>
+            
+            <div class="detail-quote">
+                <p class="detail-quote-text serif">„Ihr Körper ist nicht das Problem. Er ist die <em>Lösung</em> – wenn man ihn versteht."</p>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Unsere Diagnostik</p>
+                <h2 class="detail-section-title serif">Was wir analysieren</h2>
+                <div class="detail-grid">
+                    <div class="detail-card">
+                        <p class="detail-card-icon">◎</p>
+                        <h3 class="detail-card-title serif">Haltungsanalyse</h3>
+                        <p class="detail-card-text sans">Statische und dynamische Analyse Ihrer Haltung – im Alltag und bei Ihrer spezifischen Tätigkeit (Instrument, Bildschirm, Bühne).</p>
+                    </div>
+                    <div class="detail-card">
+                        <p class="detail-card-icon">◎</p>
+                        <h3 class="detail-card-title serif">Faszien-Assessment</h3>
+                        <p class="detail-card-text sans">Verklebte Faszien schränken Beweglichkeit ein und können chronische Schmerzen verursachen. Wir finden die Engstellen.</p>
+                    </div>
+                    <div class="detail-card">
+                        <p class="detail-card-icon">◎</p>
+                        <h3 class="detail-card-title serif">Kiefer-Diagnostik</h3>
+                        <p class="detail-card-text sans">Der Kiefer ist oft ein versteckter Stressspeicher. CMD (Craniomandibuläre Dysfunktion) kann das gesamte System beeinflussen.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Die Lösung</p>
+                <h2 class="detail-section-title serif">Körper neu organisieren</h2>
+                <ul class="detail-list">
+                    <li>Osteopathische Behandlung zur Lösung struktureller Blockaden</li>
+                    <li>Instrument-spezifische Übungsprogramme</li>
+                    <li>Faszientherapie zur Wiederherstellung der Beweglichkeit</li>
+                    <li>Kieferbehandlung bei CMD-Symptomatik</li>
+                    <li>Ergonomie-Beratung für Ihren Arbeitsplatz</li>
+                </ul>
+            </div>
+            
+            <div class="detail-cta">
+                <h2 class="detail-cta-title serif">Körper verstehen</h2>
+                <p class="sans" style="opacity: 0.6; margin-bottom: 32px;">Lassen Sie uns Ihre physischen Muster analysieren.</p>
+                <button class="cta-btn sans" onclick="showOverlay('kontakt'); closeDetail();">Erstgespräch vereinbaren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAIL OVERLAYS - Zielgruppen -->
+    <div class="detail-overlay" id="detailMusiker">
+        <button class="detail-close sans" onclick="closeDetail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Zurück</button>
+        <div class="detail-hero">
+            <div class="detail-hero-bg"><img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1600&q=80" alt=""></div>
+            <div class="detail-hero-content">
+                <p class="detail-hero-number sans">ZIELGRUPPE</p>
+                <h1 class="detail-hero-title serif">Musiker & Performer</h1>
+                <p class="detail-hero-subtitle sans">84% der Berufsmusiker leiden an chronischen Beschwerden. Das muss nicht sein.</p>
+            </div>
+        </div>
+        <div class="detail-content">
+            <div class="detail-stats">
+                <div><p class="detail-stat-number serif">84%</p><p class="detail-stat-text sans">mit chronischen Beschwerden</p></div>
+                <div><p class="detail-stat-number serif">1-2%</p><p class="detail-stat-text sans">entwickeln fokale Dystonie</p></div>
+                <div><p class="detail-stat-number serif">70%</p><p class="detail-stat-text sans">kennen Lampenfieber</p></div>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Die Herausforderung</p>
+                <h2 class="detail-section-title serif">Der Preis der Perfektion</h2>
+                <p class="detail-section-text sans">Musiker sind Hochleistungssportler – aber niemand behandelt sie so. Jahre des Übens in unnatürlichen Haltungen, der Druck der Perfektion, die Angst vor dem Versagen auf der Bühne. Betablocker maskieren das Problem, lösen es aber nicht.</p>
+            </div>
+            
+            <div class="detail-quote">
+                <p class="detail-quote-text serif">„Lampenfieber ist keine Schwäche. Es ist Ihr Nervensystem, das <em>Schutz</em> sucht."</p>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Typische Symptome</p>
+                <h2 class="detail-section-title serif">Was Musiker zu uns führt</h2>
+                <div class="detail-grid">
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Lampenfieber</h3>
+                        <p class="detail-card-text sans">Zitternde Hände, Herzrasen, Blackouts – wenn die Angst die Technik übernimmt. Wir arbeiten an der Ursache, nicht am Symptom.</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Fokale Dystonie</h3>
+                        <p class="detail-card-text sans">Die gefürchtete "Musikerkrankheit" – unwillkürliche Muskelkontraktionen, die das Spielen unmöglich machen. Früherkennung ist entscheidend.</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Überbelastung</h3>
+                        <p class="detail-card-text sans">Sehnenscheidenentzündung, Karpaltunnel, chronische Schmerzen – die physischen Kosten jahrelangen Übens.</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Erschöpfung</h3>
+                        <p class="detail-card-text sans">Tourneen, Jetlag, unregelmäßige Zeiten – das System ist am Limit. Biochemische Unterstützung macht den Unterschied.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Unser Ansatz</p>
+                <h2 class="detail-section-title serif">Wie wir Musikern helfen</h2>
+                <ul class="detail-list">
+                    <li>Nervensystem-Training: Vom Überlebensmodus in den Flow-Zustand</li>
+                    <li>Biochemische Optimierung: Cortisol-Balance für stabile Nerven</li>
+                    <li>Körperarbeit: Instrument-spezifische Haltungskorrektur</li>
+                    <li>Performance-Protokolle: Was vor, während und nach dem Auftritt hilft</li>
+                    <li>Langfristige Begleitung: Karrierebegleitende Optimierung</li>
+                </ul>
+            </div>
+            
+            <div class="detail-cta">
+                <h2 class="detail-cta-title serif">Für Musiker</h2>
+                <p class="sans" style="opacity: 0.6; margin-bottom: 32px;">Investieren Sie in Ihre wichtigste Ressource: Sie selbst.</p>
+                <button class="cta-btn sans" onclick="showOverlay('kontakt'); closeDetail();">Erstgespräch vereinbaren</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-overlay" id="detailHsp">
+        <button class="detail-close sans" onclick="closeDetail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Zurück</button>
+        <div class="detail-hero">
+            <div class="detail-hero-bg"><img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=1600&q=80" alt=""></div>
+            <div class="detail-hero-content">
+                <p class="detail-hero-number sans">ZIELGRUPPE</p>
+                <h1 class="detail-hero-title serif">Hochsensible</h1>
+                <p class="detail-hero-subtitle sans">15-20% der Bevölkerung nehmen intensiver wahr. Das ist keine Störung – es ist eine andere Neurologie.</p>
+            </div>
+        </div>
+        <div class="detail-content">
+            <div class="detail-stats">
+                <div><p class="detail-stat-number serif">15-20%</p><p class="detail-stat-text sans">der Bevölkerung sind HSP</p></div>
+                <div><p class="detail-stat-number serif">↑↑</p><p class="detail-stat-text sans">Tiefere Verarbeitung aller Reize</p></div>
+                <div><p class="detail-stat-number serif">≠</p><p class="detail-stat-text sans">Keine Störung – andere Neurologie</p></div>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Die Realität</p>
+                <h2 class="detail-section-title serif">Leben mit hoher Sensitivität</h2>
+                <p class="detail-section-text sans">Hochsensible Menschen (HSP) haben ein fein kalibriertes Nervensystem. Sie nehmen mehr wahr, verarbeiten tiefer und brauchen mehr Zeit zur Regeneration. In einer Welt, die auf Reizüberflutung ausgelegt ist, kann das erschöpfend sein – aber auch ein enormer Vorteil.</p>
+            </div>
+            
+            <div class="detail-quote">
+                <p class="detail-quote-text serif">„Hochsensibilität ist keine Schwäche. Es ist ein fein kalibriertes Instrument, das <em>Pflege</em> braucht."</p>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Typische Herausforderungen</p>
+                <h2 class="detail-section-title serif">Was HSP zu uns führt</h2>
+                <div class="detail-grid">
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Überstimulation</h3>
+                        <p class="detail-card-text sans">Zu viele Reize, zu wenig Erholung. Das Nervensystem ist ständig im Alarmmodus. Wir helfen, die Reizschwelle zu regulieren.</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Erschöpfung</h3>
+                        <p class="detail-card-text sans">Tiefe Verarbeitung kostet Energie. Viele HSP sind chronisch erschöpft, ohne zu verstehen warum. Biochemische Unterstützung hilft.</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Geräuschempfindlichkeit</h3>
+                        <p class="detail-card-text sans">Bestimmte Geräusche lösen starke Reaktionen aus. Das Safe-Sound-Protocol kann hier erstaunliche Ergebnisse bringen.</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Emotionale Intensität</h3>
+                        <p class="detail-card-text sans">Starke Gefühle, tiefe Empathie, manchmal überwältigend. Nervensystem-Arbeit hilft, die Intensität zu regulieren.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Unser Ansatz</p>
+                <h2 class="detail-section-title serif">HSP-gerechte Optimierung</h2>
+                <ul class="detail-list">
+                    <li>Sanfte Nervensystem-Regulation ohne Überforderung</li>
+                    <li>Biochemische Unterstützung für mehr Resilienz</li>
+                    <li>Strategien für Reiz-Management im Alltag</li>
+                    <li>Safe-Sound-Protocol bei Geräuschempfindlichkeit</li>
+                    <li>Langfristige Begleitung in HSP-gerechtem Tempo</li>
+                </ul>
+            </div>
+            
+            <div class="detail-cta">
+                <h2 class="detail-cta-title serif">Für Hochsensible</h2>
+                <p class="sans" style="opacity: 0.6; margin-bottom: 32px;">Lernen Sie, Ihre Sensitivität als Stärke zu nutzen.</p>
+                <button class="cta-btn sans" onclick="showOverlay('kontakt'); closeDetail();">Erstgespräch vereinbaren</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-overlay" id="detailFuehrungskraefte">
+        <button class="detail-close sans" onclick="closeDetail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Zurück</button>
+        <div class="detail-hero">
+            <div class="detail-hero-bg"><img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1600&q=80" alt=""></div>
+            <div class="detail-hero-content">
+                <p class="detail-hero-number sans">ZIELGRUPPE</p>
+                <h1 class="detail-hero-title serif">Führungskräfte</h1>
+                <p class="detail-hero-subtitle sans">Chronischer Entscheidungsstress. Die Einsamkeit an der Spitze. Der Preis der Verantwortung.</p>
+            </div>
+        </div>
+        <div class="detail-content">
+            <div class="detail-stats">
+                <div><p class="detail-stat-number serif">35.000</p><p class="detail-stat-text sans">Entscheidungen pro Tag (Durchschnitt CEO)</p></div>
+                <div><p class="detail-stat-number serif">62%</p><p class="detail-stat-text sans">der Führungskräfte mit Burnout-Symptomen</p></div>
+                <div><p class="detail-stat-number serif">↓↓</p><p class="detail-stat-text sans">Abnehmende Entscheidungsqualität ab 15 Uhr</p></div>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Die Last</p>
+                <h2 class="detail-section-title serif">Executive Burnout</h2>
+                <p class="detail-section-text sans">Führungskräfte treffen täglich Tausende Entscheidungen. Jede einzelne kostet kognitive Ressourcen. Am Ende des Tages ist der Tank leer – aber die Anforderungen hören nicht auf. Die Folge: Entscheidungsmüdigkeit, Brain Fog, und irgendwann Burnout.</p>
+            </div>
+            
+            <div class="detail-quote">
+                <p class="detail-quote-text serif">„Sie können nicht mehr geben, als Ihre <em>Biochemie</em> erlaubt. Aber Sie können Ihre Biochemie optimieren."</p>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Typische Symptome</p>
+                <h2 class="detail-section-title serif">Was Führungskräfte zu uns führt</h2>
+                <div class="detail-grid">
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Entscheidungsmüdigkeit</h3>
+                        <p class="detail-card-text sans">Abends fehlt die Kraft für wichtige Entscheidungen. Die Qualität leidet. Wir optimieren Ihren kognitiven Tagesrhythmus.</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Brain Fog</h3>
+                        <p class="detail-card-text sans">Der Kopf fühlt sich an wie in Watte gepackt. Konzentration fällt schwer. Oft ein Zeichen für Entzündungen oder Nährstoffmängel.</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Schlafprobleme</h3>
+                        <p class="detail-card-text sans">Das Gehirn schaltet nicht ab. Grübeln statt Regeneration. Cortisol-Dysbalance hält Sie wach.</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Chronischer Stress</h3>
+                        <p class="detail-card-text sans">Das System ist im Dauerstress. Die Nebennieren erschöpft. Zeit für biochemische Intervention.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Unser Ansatz</p>
+                <h2 class="detail-section-title serif">Executive Performance</h2>
+                <ul class="detail-list">
+                    <li>Kognitive Optimierung: Nootropika und Nährstoffe für klares Denken</li>
+                    <li>Stress-Resilienz: Nervensystem-Training für mehr Gelassenheit</li>
+                    <li>Schlaf-Protokolle: Tiefe Regeneration trotz vollem Kalender</li>
+                    <li>Energie-Management: Biochemisch optimierte Leistungskurve</li>
+                    <li>Diskrete Begleitung: Vertraulich und auf Augenhöhe</li>
+                </ul>
+            </div>
+            
+            <div class="detail-cta">
+                <h2 class="detail-cta-title serif">Für Führungskräfte</h2>
+                <p class="sans" style="opacity: 0.6; margin-bottom: 32px;">Investieren Sie in Ihre wichtigste Ressource.</p>
+                <button class="cta-btn sans" onclick="showOverlay('kontakt'); closeDetail();">Erstgespräch vereinbaren</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-overlay" id="detailKreative">
+        <button class="detail-close sans" onclick="closeDetail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Zurück</button>
+        <div class="detail-hero">
+            <div class="detail-hero-bg"><img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&q=80" alt=""></div>
+            <div class="detail-hero-content">
+                <p class="detail-hero-number sans">ZIELGRUPPE</p>
+                <h1 class="detail-hero-title serif">Kreative</h1>
+                <p class="detail-hero-subtitle sans">Der Druck, immer innovativ zu sein. Deadlines. Die Angst vor der leeren Seite.</p>
+            </div>
+        </div>
+        <div class="detail-content">
+            <div class="detail-stats">
+                <div><p class="detail-stat-number serif">3×</p><p class="detail-stat-text sans">höhere Rate an Angst und Depression</p></div>
+                <div><p class="detail-stat-number serif">∞</p><p class="detail-stat-text sans">Deadlines, nie endender Druck</p></div>
+                <div><p class="detail-stat-number serif">0</p><p class="detail-stat-text sans">Sicherheit – jedes Projekt neu beweisen</p></div>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Der Kreative Fluch</p>
+                <h2 class="detail-section-title serif">Innovation unter Druck</h2>
+                <p class="detail-section-text sans">Kreative müssen auf Knopfdruck innovativ sein. Aber Kreativität ist ein Zustand des Nervensystems – und er lässt sich nicht erzwingen. Unter Stress schaltet das Gehirn auf Überlebensmodus: gut für Flucht, schlecht für Innovation. Die Folge: Blockaden, Prokrastination, Burnout.</p>
+            </div>
+            
+            <div class="detail-quote">
+                <p class="detail-quote-text serif">„Kreativität braucht ein Nervensystem im <em>Sicherheitsmodus</em>. Stress tötet Innovation."</p>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Typische Herausforderungen</p>
+                <h2 class="detail-section-title serif">Was Kreative zu uns führt</h2>
+                <div class="detail-grid">
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Kreative Blockaden</h3>
+                        <p class="detail-card-text sans">Die Ideen fließen nicht. Der Kopf ist leer. Oft ein Zeichen für ein überaktives Nervensystem, das im Schutzmodus ist.</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Deadline-Angst</h3>
+                        <p class="detail-card-text sans">Der Druck lähmt statt zu motivieren. Prokrastination. Last-Minute-Panik. Der Cortisol-Teufelskreis.</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Imposter-Syndrom</h3>
+                        <p class="detail-card-text sans">Das Gefühl, nicht gut genug zu sein. Jedes Projekt neu beweisen müssen. Chronischer Selbstzweifel.</p>
+                    </div>
+                    <div class="detail-card">
+                        <h3 class="detail-card-title serif">Boom & Bust</h3>
+                        <p class="detail-card-text sans">Phasen enormer Produktivität, gefolgt von Erschöpfung. Keine Stabilität. Biochemische Achterbahn.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <p class="detail-section-label sans">Unser Ansatz</p>
+                <h2 class="detail-section-title serif">Kreativität optimieren</h2>
+                <ul class="detail-list">
+                    <li>Flow-Zustand trainieren: Nervensystem in den kreativen Modus bringen</li>
+                    <li>Biochemische Stabilität: Konstante Energie statt Boom & Bust</li>
+                    <li>Stress-Resilienz: Deadline-Druck ohne Lähmung</li>
+                    <li>Kognitive Unterstützung: Klarheit und Fokus wenn es zählt</li>
+                    <li>Langfristige Strategien: Nachhaltige kreative Praxis</li>
+                </ul>
+            </div>
+            
+            <div class="detail-cta">
+                <h2 class="detail-cta-title serif">Für Kreative</h2>
+                <p class="sans" style="opacity: 0.6; margin-bottom: 32px;">Schaffen Sie die Bedingungen für Ihre beste Arbeit.</p>
+                <button class="cta-btn sans" onclick="showOverlay('kontakt'); closeDetail();">Erstgespräch vereinbaren</button>
+            </div>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        var currentOverlay = null;
+        var mainContainer = document.getElementById('mainContainer');
+        var header = document.getElementById('header');
+        var lauraPhotoInterval = null, lauraLetterInterval = null;
+        var photoUrls = [
+            "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600&q=80",
+            "https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=600&q=80",
+            "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&q=80",
+            "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80"
+        ];
+
+        function showMain() {
+            currentOverlay = null;
+            clearInterval(lauraPhotoInterval); clearInterval(lauraLetterInterval);
+            document.querySelectorAll('.overlay').forEach(function(o) { o.classList.remove('active'); });
+            document.querySelectorAll('.program-overlay').forEach(function(o) { o.classList.remove('active'); });
+            mainContainer.style.display = 'block';
+            header.classList.remove('dark');
+            updateNavButtons();
+        }
+
+        function showOverlay(name) {
+            currentOverlay = name;
+            clearInterval(lauraPhotoInterval); clearInterval(lauraLetterInterval);
+            mainContainer.style.display = 'none';
+            document.querySelectorAll('.overlay').forEach(function(o) { o.classList.remove('active'); });
+            document.querySelectorAll('.program-overlay').forEach(function(o) { o.classList.remove('active'); });
+            var overlay = document.getElementById(name + 'Overlay');
+            if (overlay) { overlay.classList.add('active'); }
+            if (name === 'laura') {
+                var lauraOverlay = document.getElementById('lauraOverlay');
+                lauraOverlay.scrollTop = 0;
+                initLauraOverlay();
+            }
+            header.classList.remove('dark');
+            updateNavButtons();
+        }
+
+        function updateNavButtons() {
+            var btns = document.querySelectorAll('.nav-btn');
+            btns.forEach(function(btn) { btn.classList.remove('active'); btn.classList.add('muted'); });
+            if (!currentOverlay) btns[0].classList.add('active'), btns[0].classList.remove('muted');
+            else if (currentOverlay === 'laura') btns[1].classList.add('active'), btns[1].classList.remove('muted');
+            else if (currentOverlay === 'kreative') btns[2].classList.add('active'), btns[2].classList.remove('muted');
+            else if (currentOverlay === 'kontakt') btns[3].classList.add('active'), btns[3].classList.remove('muted');
+        }
+
+        function showProgram(name) {
+            var id = 'program' + name.charAt(0).toUpperCase() + name.slice(1);
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeProgram() {
+            document.querySelectorAll('.program-overlay').forEach(function(o) { o.classList.remove('active'); });
+        }
+
+        function showDetail(name) {
+            var id = 'detail' + name.charAt(0).toUpperCase() + name.slice(1);
+            var overlay = document.getElementById(id);
+            if (overlay) {
+                overlay.classList.add('active');
+                overlay.scrollTop = 0;
+            }
+        }
+
+        function closeDetail() {
+            document.querySelectorAll('.detail-overlay').forEach(function(o) { o.classList.remove('active'); });
+        }
+
+        function initLauraOverlay() {
+            var photoContainer = document.getElementById('lauraPhotoContainer');
+            photoContainer.innerHTML = '';
+            
+            // Letter animation
+            var letters = document.querySelectorAll('.laura-letter');
+            lauraLetterInterval = setInterval(function() {
+                var idx = Math.floor(Math.random() * letters.length);
+                var c = letters[idx].style.fontFamily;
+                letters[idx].style.fontFamily = c.includes('DM Sans') ? "'Libre Bodoni', serif" : "'DM Sans', sans-serif";
+            }, 800);
+
+            // Photo animation
+            var photoIndex = 0;
+            var positions = [
+                { left: '12%', top: '22%', width: '180px' },
+                { left: '72%', top: '18%', width: '160px' },
+                { left: '8%', top: '58%', width: '150px' },
+                { left: '78%', top: '52%', width: '170px' },
+                { left: '42%', top: '12%', width: '140px' }
+            ];
+
+            function addHeroPhoto() {
+                var nameOpacity = window.getComputedStyle(document.getElementById('lauraNameContainer')).opacity;
+                if (parseFloat(nameOpacity) < 0.1) return;
+
+                if (photoContainer.children.length >= 5) {
+                    var oldest = photoContainer.children[0];
+                    oldest.style.opacity = '0';
+                    setTimeout(function() { if (oldest.parentNode) oldest.parentNode.removeChild(oldest); }, 1000);
+                }
+                var pos = positions[photoIndex % positions.length];
+                var photo = document.createElement('div');
+                photo.className = 'laura-photo';
+                photo.style.cssText = 'left:' + pos.left + ';top:' + pos.top + ';width:' + pos.width + ';aspect-ratio:4/5;opacity:0;';
+                photo.innerHTML = '<img src="' + photoUrls[photoIndex % photoUrls.length] + '">';
+                photoContainer.appendChild(photo);
+
+                setTimeout(function() { photo.style.opacity = '0.9'; }, 100);
+                setTimeout(function() { photo.style.opacity = '0'; }, 2800);
+                setTimeout(function() { if (photo.parentNode) photo.parentNode.removeChild(photo); }, 3800);
+                photoIndex++;
+            }
+            addHeroPhoto();
+            lauraPhotoInterval = setInterval(addHeroPhoto, 1500);
+        }
+
+        // Main scroll
+        mainContainer.addEventListener('scroll', function() {
+            var scroll = mainContainer.scrollTop, vh = window.innerHeight;
+            var intros = [document.getElementById('intro0'), document.getElementById('intro1'), document.getElementById('intro2')];
+            intros.forEach(function(el) { el.classList.remove('active'); });
+            if (scroll < vh * 0.7) intros[0].classList.add('active');
+            else if (scroll < vh * 1.5) intros[1].classList.add('active');
+            else intros[2].classList.add('active');
+            document.getElementById('parallaxImg1').style.transform = 'translateY(' + (scroll * 0.12) + 'px)';
+            var img2Progress = Math.min(Math.max((scroll - vh * 0.8) / (vh * 0.6), 0), 1);
+            document.getElementById('parallaxImg2').style.opacity = img2Progress;
+            document.getElementById('parallaxImg2').style.transform = 'translateY(' + (scroll * 0.08) + 'px)';
+            var heroSticky = document.getElementById('heroSticky');
+            var exitProgress = Math.min(Math.max((scroll - vh * 2.4) / (vh * 0.6), 0), 1);
+            heroSticky.style.opacity = 1 - exitProgress;
+            var stmtRect = document.querySelector('.statement-sticky').getBoundingClientRect();
+            var stmtProgress = stmtRect.top > vh ? 0 : stmtRect.top < vh * 0.15 ? 1 : (vh - stmtRect.top) / (vh * 0.85);
+            for (var i = 0; i < 4; i++) {
+                var stagger = i * 0.18;
+                var lineProgress = Math.min(1, Math.max(0, (stmtProgress - stagger) / 0.4));
+                var eased = 1 - Math.pow(1 - lineProgress, 3);
+                var x = (i % 2 === 0 ? -110 : 110) * (1 - eased);
+                document.getElementById('stmt' + i).style.transform = 'translateX(' + x + '%)';
+                document.getElementById('stmt' + i).style.opacity = Math.min(1, lineProgress * 2);
+            }
+            ['parallaxBio', 'parallaxNerv', 'parallaxPhys'].forEach(function(id) {
+                var section = document.getElementById(id);
+                var bg = document.getElementById(id + 'Bg');
+                if (section && bg) {
+                    var rect = section.getBoundingClientRect();
+                    bg.style.transform = 'translateY(' + (((vh - rect.top) / (vh + rect.height) - 0.5) * 100) + 'px)';
+                }
+            });
+            var ctaRect = document.getElementById('ctaSection').getBoundingClientRect();
+            var isDark = ctaRect.top < vh * 0.5;
+            document.getElementById('footer').querySelectorAll('a, span').forEach(function(el) { el.style.color = isDark ? '#fff' : '#000'; });
+            header.classList.toggle('dark', isDark);
+        });
+
+        // Laura scroll - using the overlay itself as scroll container
+        document.getElementById('lauraOverlay').addEventListener('scroll', function() {
+            var scroll = this.scrollTop;
+            var vh = window.innerHeight;
+            var totalHeight = 16 * vh; // 1600vh
+            var progress = Math.min(1, Math.max(0, scroll / (totalHeight - vh)));
+
+            var lauraName = document.getElementById('lauraNameContainer');
+            var photoContainer = document.getElementById('lauraPhotoContainer');
+            var growingWords = document.getElementById('lauraGrowingWords');
+            var horizontal = document.getElementById('lauraHorizontal');
+            var imageTrack = document.getElementById('lauraImageTrack');
+            var cta = document.getElementById('lauraCta');
+
+            // Phase 1: Name (0-8%)
+            if (progress < 0.08) {
+                var nameOpacity = 1 - (progress / 0.08);
+                lauraName.style.opacity = nameOpacity;
+                photoContainer.style.opacity = nameOpacity;
+                growingWords.style.zIndex = '5';
+            } else {
+                lauraName.style.opacity = 0;
+                photoContainer.style.opacity = 0;
+            }
+
+            // Phase 2: Growing words (5-14%)
+            if (progress >= 0.05 && progress < 0.14) {
+                growingWords.style.zIndex = '25';
+                var growProgress = (progress - 0.05) / 0.09;
+                var fadeProgress = progress > 0.12 ? (progress - 0.12) / 0.02 : 0;
+                var fontSize = 3 + 12 * Math.min(1, growProgress);
+                
+                ['lauraWord1', 'lauraWord2', 'lauraWord3'].forEach(function(id) {
+                    var word = document.getElementById(id);
+                    word.style.opacity = 1 - fadeProgress;
+                    word.style.fontSize = fontSize + 'vw';
+                });
+            } else if (progress < 0.05) {
+                ['lauraWord1', 'lauraWord2', 'lauraWord3'].forEach(function(id) {
+                    document.getElementById(id).style.opacity = 0;
+                });
+            } else {
+                ['lauraWord1', 'lauraWord2', 'lauraWord3'].forEach(function(id) {
+                    document.getElementById(id).style.opacity = 0;
+                });
+            }
+
+            // Phase 3: Horizontal scroll (14-88%)
+            // 14-22%: fade in black + slide first panel from right into view
+            // 22-88%: normal horizontal scroll
+            if (progress >= 0.14 && progress <= 0.88) {
+                horizontal.style.display = 'flex';
+                
+                // Fade in the black background and slide first panel (14-22%)
+                if (progress < 0.22) {
+                    var fadeProgress = (progress - 0.14) / 0.08;
+                    horizontal.style.opacity = Math.min(1, fadeProgress * 1.5);
+                    horizontal.classList.toggle('visible', fadeProgress > 0.3);
+                    var slideOffset = (1 - fadeProgress) * 60;
+                    imageTrack.style.transform = 'translateX(' + slideOffset + 'vw)';
+                } else {
+                    horizontal.style.opacity = 1;
+                    horizontal.classList.add('visible');
+                    var hProgress = (progress - 0.22) / 0.66;
+                    var translateX = -hProgress * 580;
+                    imageTrack.style.transform = 'translateX(' + translateX + 'vw)';
+                }
+            } else if (progress < 0.14) {
+                horizontal.style.display = 'none';
+                horizontal.style.opacity = 0;
+                horizontal.classList.remove('visible');
+            } else if (progress > 0.88) {
+                // Keep horizontal visible but faded behind CTA
+                horizontal.style.display = 'flex';
+                horizontal.style.opacity = 1 - ((progress - 0.88) / 0.12);
+            }
+
+            // Phase 4: CTA (85-100%) - starts fading in while horizontal still visible
+            if (progress > 0.85) {
+                cta.style.display = 'flex';
+                var ctaProgress = (progress - 0.85) / 0.15;
+                cta.style.opacity = Math.min(1, ctaProgress);
+                cta.style.pointerEvents = ctaProgress > 0.5 ? 'auto' : 'none';
+                header.classList.add('dark');
+            } else {
+                cta.style.display = 'none';
+                cta.style.opacity = 0;
+                cta.style.pointerEvents = 'none';
+                if (currentOverlay === 'laura') header.classList.remove('dark');
+            }
+        });
+
+        // Kreative parallax
+        document.getElementById('kreativeOverlay').addEventListener('scroll', function() {
+            var vh = window.innerHeight;
+            this.querySelectorAll('.kreative-bg').forEach(function(bg) {
+                var section = bg.parentElement;
+                var rect = section.getBoundingClientRect();
+                var progress = (vh - rect.top) / (vh + rect.height);
+                bg.style.transform = 'translateY(' + ((progress - 0.5) * 80) + 'px)';
+            });
+        });
+
+        updateNavButtons();
+    </script>
+</body>
+</html>
