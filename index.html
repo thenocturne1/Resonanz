@@ -41,9 +41,9 @@
 
         .parallax-img { position: absolute; will-change: transform; transition: opacity 0.8s ease; }
         .parallax-img img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); }
-        .parallax-img-1 { right: 5%; top: 15%; width: clamp(140px, 18vw, 200px); aspect-ratio: 4/5; opacity: 0; }
-        .parallax-img-2 { left: 5%; top: 45%; width: clamp(120px, 15vw, 170px); aspect-ratio: 3/4; opacity: 0; }
-        .parallax-img.visible { opacity: 1; }
+        .parallax-img-1 { right: 2%; top: 8%; width: clamp(220px, 30vw, 380px); aspect-ratio: 4/5; opacity: 0.9; }
+        .parallax-img-2 { left: 2%; top: 35%; width: clamp(200px, 26vw, 340px); aspect-ratio: 3/4; opacity: 0; }
+        .parallax-img.visible { opacity: 0.9; }
 
         .manifest-section { min-height: 100vh; padding: 120px 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; }
         .manifest-text { max-width: 700px; text-align: center; }
@@ -61,17 +61,21 @@
         .statement-line { font-size: clamp(48px, 13vw, 120px); font-weight: 400; line-height: 0.95; letter-spacing: -0.03em; opacity: 0; }
         .statement-line.italic { font-style: italic; }
 
-        .parallax-section { position: relative; min-height: 100vh; overflow: hidden; }
-        .parallax-bg { position: absolute; top: -20%; left: 0; right: 0; height: 140%; z-index: 1; }
-        .parallax-bg img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); }
-        .parallax-content { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 120px 28px; }
+        .parallax-section { position: relative; overflow: hidden; padding: 120px 0; }
+        .parallax-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1; }
+        .parallax-bg img { width: 100%; height: 120%; object-fit: cover; filter: grayscale(100%); position: absolute; top: -10%; }
+        .parallax-content { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; padding: 40px 28px; }
         .parallax-content.right { align-items: flex-end; }
-        .parallax-card { background: rgba(255,255,255,0.95); padding: 48px; max-width: 500px; transition: all 0.3s ease; }
-        .parallax-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-        .parallax-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.4; margin-bottom: 16px; }
-        .parallax-title { font-size: clamp(28px, 5vw, 42px); font-weight: 400; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 20px; }
-        .parallax-text { font-size: 14px; line-height: 1.7; opacity: 0.8; margin-bottom: 16px; }
-        .parallax-item { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.5; margin-bottom: 8px; }
+        @media (min-width: 768px) {
+            .parallax-section { padding: 140px 0; }
+            .parallax-content { padding: 60px 80px; }
+        }
+        .parallax-card { background: rgba(255,255,255,0.98); padding: 40px; max-width: 460px; transition: all 0.3s ease; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+        .parallax-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        .parallax-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.5; margin-bottom: 12px; }
+        .parallax-title { font-size: clamp(24px, 4vw, 34px); font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 16px; }
+        .parallax-text { font-size: 14px; line-height: 1.6; opacity: 0.8; margin-bottom: 14px; }
+        .parallax-item { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.6; margin-bottom: 6px; }
 
         .columns-section { padding: 120px 28px 80px; background: #fff; }
         .columns-header { text-align: center; margin-bottom: 80px; }
@@ -105,20 +109,25 @@
         .supplement-preview-tag { font-size: 11px; padding: 8px 14px; background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 100px; }
         
         /* Supplement Overlay Styles */
+        #detailSupplemente { color: #000 !important; }
+        #detailSupplemente * { color: #000; }
+        #detailSupplemente .supplement-latin { opacity: 0.5; }
+        #detailSupplemente .supplement-function { opacity: 0.75; }
+        #detailSupplemente .supplement-category-title { opacity: 0.5; }
         .supplement-overlay-inner { max-width: 1200px; margin: 0 auto; padding: 120px 28px 80px; }
         .supplement-overlay-header { margin-bottom: 48px; }
-        .supplement-overlay-title { font-size: clamp(42px, 10vw, 80px); font-weight: 300; line-height: 1; margin-bottom: 24px; }
-        .supplement-overlay-intro { font-size: 15px; line-height: 1.7; opacity: 0.7; max-width: 700px; }
+        .supplement-overlay-title { font-size: clamp(42px, 10vw, 80px); font-weight: 300; line-height: 1; margin-bottom: 24px; color: #000; }
+        .supplement-overlay-intro { font-size: 15px; line-height: 1.7; opacity: 0.7; max-width: 700px; color: #000; }
         .supplement-category { margin-bottom: 60px; }
-        .supplement-category-title { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.4; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        .supplement-category-title { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.4; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.1); color: #000; }
         .supplement-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
         .supplement-card { background: #fff; padding: 28px 24px; border: 1px solid rgba(0,0,0,0.06); transition: all 0.3s ease; }
         .supplement-card:hover { border-color: rgba(0,0,0,0.15); transform: translateY(-2px); }
-        .supplement-name { font-size: 20px; font-weight: 400; margin-bottom: 4px; }
-        .supplement-latin { font-size: 11px; font-style: italic; opacity: 0.4; margin-bottom: 12px; }
-        .supplement-function { font-size: 12px; line-height: 1.6; opacity: 0.7; }
+        .supplement-name { font-size: 20px; font-weight: 400; margin-bottom: 4px; color: #000; }
+        .supplement-latin { font-size: 11px; font-style: italic; opacity: 0.4; margin-bottom: 12px; color: #000; }
+        .supplement-function { font-size: 12px; line-height: 1.6; opacity: 0.7; color: #000; }
         .supplement-note { margin-top: 48px; padding: 24px; background: rgba(0,0,0,0.03); border-left: 3px solid #000; }
-        .supplement-note p { font-size: 13px; line-height: 1.6; opacity: 0.8; }
+        .supplement-note p { font-size: 13px; line-height: 1.6; opacity: 0.8; color: #000; }
 
         .pricing-section { padding: 80px 28px; max-width: 1000px; margin: 0 auto; }
         .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
@@ -152,7 +161,7 @@
             -webkit-overflow-scrolling: touch;
         }
         .laura-scroll-track { 
-            height: 1800vh; 
+            height: 1200vh; 
             position: relative; 
             width: 100%; 
             background: transparent; 
@@ -189,8 +198,8 @@
 
         .laura-panel { 
             flex-shrink: 0; 
-            width: 75vw; 
-            height: 70vh; 
+            width: 80vw; 
+            height: 75vh; 
             position: relative;
             border-radius: 12px;
             overflow: hidden;
@@ -381,12 +390,8 @@
         }
         .kreative-float-img {
             position: absolute;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-            will-change: transform;
-        }
-        .kreative-float-img.visible {
             opacity: 0.85;
+            will-change: transform;
         }
         .kreative-float-img img {
             width: 100%;
@@ -394,29 +399,29 @@
             object-fit: cover;
             filter: grayscale(100%);
         }
-        /* Individual image positions and sizes */
+        /* Individual image positions and sizes - much bigger */
         .kreative-float-img:nth-child(1) {
-            left: 3%;
-            top: 8%;
-            width: clamp(140px, 22vw, 260px);
+            left: 1%;
+            top: 3%;
+            width: clamp(200px, 32vw, 400px);
             aspect-ratio: 4/5;
         }
         .kreative-float-img:nth-child(2) {
-            right: 5%;
-            top: 15%;
-            width: clamp(120px, 18vw, 220px);
+            right: 1%;
+            top: 8%;
+            width: clamp(180px, 28vw, 360px);
             aspect-ratio: 3/4;
         }
         .kreative-float-img:nth-child(3) {
-            left: 8%;
-            bottom: 12%;
-            width: clamp(130px, 20vw, 240px);
+            left: 4%;
+            bottom: 5%;
+            width: clamp(190px, 30vw, 380px);
             aspect-ratio: 5/6;
         }
         .kreative-float-img:nth-child(4) {
-            right: 3%;
-            bottom: 5%;
-            width: clamp(150px, 24vw, 280px);
+            right: 1%;
+            bottom: 2%;
+            width: clamp(210px, 34vw, 420px);
             aspect-ratio: 4/5;
         }
         .kreative-floating-text {
@@ -1350,13 +1355,13 @@
     </div>
 
     <!-- SUPPLEMENT OVERLAY -->
-    <div class="detail-overlay" id="detailSupplemente" style="background: #f8f8f8;">
-        <button class="detail-close sans" onclick="closeDetail()" style="color: rgba(0,0,0,0.6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Zurück</button>
-        <div class="supplement-overlay-inner">
+    <div class="detail-overlay" id="detailSupplemente" style="background: #f8f8f8; color: #000;">
+        <button class="detail-close sans" onclick="closeDetail()" style="color: #000;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Zurück</button>
+        <div class="supplement-overlay-inner" style="color: #000;">
             <div class="supplement-overlay-header">
-                <p class="overlay-label sans">Biochemische Werkzeuge</p>
-                <h1 class="supplement-overlay-title elegant"><span class="italic-letter">S</span>upplemente</h1>
-                <p class="supplement-overlay-intro sans">Basierend auf Ihren individuellen Laborwerten und Symptomen setzen wir gezielt hochwertige Supplemente ein. Hier ein Überblick der wichtigsten Werkzeuge aus unserem Repertoire:</p>
+                <p class="overlay-label sans" style="color: #000;">Biochemische Werkzeuge</p>
+                <h1 class="supplement-overlay-title elegant" style="color: #000;"><span class="italic-letter">S</span>upplemente</h1>
+                <p class="supplement-overlay-intro sans" style="color: #000;">Basierend auf Ihren individuellen Laborwerten und Symptomen setzen wir gezielt hochwertige Supplemente ein. Hier ein Überblick der wichtigsten Werkzeuge aus unserem Repertoire:</p>
             </div>
             
             <div class="supplement-category">
@@ -1874,20 +1879,15 @@
             else if (scroll < vh * 1.5) intros[1].classList.add('active');
             else intros[2].classList.add('active');
             
-            // Vertical parallax for hero images
+            // Vertical parallax for hero images - image 1 visible from start
             var img1 = document.getElementById('parallaxImg1');
             var img2 = document.getElementById('parallaxImg2');
             
-            // Image 1 fades in and moves with parallax
-            if (scroll > vh * 0.1) {
-                img1.classList.add('visible');
-                img1.style.transform = 'translateY(' + (scroll * 0.15) + 'px)';
-            } else {
-                img1.classList.remove('visible');
-            }
+            // Image 1 always visible with parallax
+            img1.style.transform = 'translateY(' + (scroll * 0.15) + 'px)';
             
             // Image 2 fades in later with different parallax speed
-            if (scroll > vh * 0.5) {
+            if (scroll > vh * 0.4) {
                 img2.classList.add('visible');
                 img2.style.transform = 'translateY(' + (scroll * 0.08) + 'px)';
             } else {
@@ -1968,32 +1968,33 @@
                 });
             }
 
-            // Phase 3: Horizontal scroll (6-92%)
-            if (progress >= 0.06 && progress <= 0.92) {
+            // Phase 3: Horizontal scroll (8-90%)
+            if (progress >= 0.08 && progress <= 0.90) {
                 horizontal.style.display = 'flex';
                 
-                // Fade in the black background (6-10%)
-                if (progress < 0.10) {
-                    var fadeProgress = (progress - 0.06) / 0.04;
+                // Fade in the black background (8-12%)
+                if (progress < 0.12) {
+                    var fadeProgress = (progress - 0.08) / 0.04;
                     horizontal.style.opacity = Math.min(1, fadeProgress * 1.5);
                     horizontal.classList.toggle('visible', fadeProgress > 0.3);
-                    var slideOffset = (1 - fadeProgress) * 50;
+                    var slideOffset = (1 - fadeProgress) * 40;
                     imageTrack.style.transform = 'translateX(' + slideOffset + 'vw)';
                 } else {
                     horizontal.style.opacity = 1;
                     horizontal.classList.add('visible');
-                    // 10-92% = 82% of scroll for horizontal movement
-                    var hProgress = (progress - 0.10) / 0.82;
-                    var translateX = -hProgress * 680;
+                    // 12-90% = 78% of scroll for horizontal movement
+                    var hProgress = (progress - 0.12) / 0.78;
+                    // Faster scroll: multiply by 720 to cover all panels
+                    var translateX = -hProgress * 720;
                     imageTrack.style.transform = 'translateX(' + translateX + 'vw)';
                 }
-            } else if (progress < 0.06) {
+            } else if (progress < 0.08) {
                 horizontal.style.display = 'none';
                 horizontal.style.opacity = 0;
                 horizontal.classList.remove('visible');
-            } else if (progress > 0.92) {
+            } else if (progress > 0.90) {
                 horizontal.style.display = 'flex';
-                horizontal.style.opacity = 1 - ((progress - 0.92) / 0.08);
+                horizontal.style.opacity = 1 - ((progress - 0.90) / 0.10);
             }
 
             // Phase 4: CTA (90-100%)
@@ -2009,33 +2010,19 @@
             }
         });
 
-        // Kreative parallax - vertical movement only
+        // Kreative parallax - vertical movement from start
         document.getElementById('kreativeOverlay').addEventListener('scroll', function() {
             var vh = window.innerHeight;
             var scrollY = this.scrollTop;
             
-            // Floating images vertical parallax
-            var floatingSection = document.getElementById('kreativeFloatingSection');
-            if (floatingSection) {
-                var rect = floatingSection.getBoundingClientRect();
-                var sectionProgress = (vh - rect.top) / (vh + rect.height);
-                
-                var floatImgs = document.querySelectorAll('.kreative-float-img');
-                floatImgs.forEach(function(img, index) {
-                    // Stagger the fade-in appearance
-                    var threshold = 0.1 + (index * 0.08);
-                    if (sectionProgress > threshold) {
-                        img.classList.add('visible');
-                    } else {
-                        img.classList.remove('visible');
-                    }
-                    
-                    // Different vertical parallax speeds for each image
-                    var speeds = [0.12, -0.08, 0.15, -0.1];
-                    var offset = scrollY * speeds[index % 4];
-                    img.style.transform = 'translateY(' + offset + 'px)';
-                });
-            }
+            // Floating images vertical parallax - always active
+            var floatImgs = document.querySelectorAll('.kreative-float-img');
+            floatImgs.forEach(function(img, index) {
+                // Different vertical parallax speeds for each image
+                var speeds = [0.12, -0.08, 0.15, -0.1];
+                var offset = scrollY * speeds[index % 4];
+                img.style.transform = 'translateY(' + offset + 'px)';
+            });
             
             // Section background parallax
             this.querySelectorAll('.kreative-bg').forEach(function(bg) {
